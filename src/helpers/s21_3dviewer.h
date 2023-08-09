@@ -13,7 +13,7 @@ typedef struct data {
   size_t vertex_count;
   double *vertex_array;
   size_t vertex_indices_count;
-  double *vertex_indices_array;
+  int *vertex_indices_array;
 } obj_data;
 
 #endif  // C8_3DVIEWER_S21_3DVIEWER_H
