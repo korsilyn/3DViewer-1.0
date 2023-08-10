@@ -42,6 +42,10 @@ public:
 
     int projection_type; //0-parallel 1-central
     int line_type; //0-solid 1-dotted
+    int points_type; //0-absent 1-box 2-sphere
+    int line_width;
+    int points_size;
+
 
 private slots:
 
@@ -74,6 +78,18 @@ private slots:
     void on_dotted_line_rb_clicked();
 
     void on_Color_button_2_clicked();
+
+
+
+    void on_points_size_spinbox_valueChanged(int arg1);
+
+    void on_absent_point_rb_clicked();
+
+    void on_sphere_point_rb_clicked();
+
+    void on_box_point_rb_clicked();
+
+    void on_line_width_spinbox_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

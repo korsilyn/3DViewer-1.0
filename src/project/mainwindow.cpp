@@ -37,9 +37,9 @@ void MainWindow::on_but_openFile_clicked()
 
 void MainWindow::on_but_build_clicked()
 {
-    if (file_opened) {
+//    if (file_opened) {
 
-    }
+//    }
 
 }
 
@@ -93,8 +93,105 @@ void MainWindow::on_Color_button_clicked()
 #endif
 }
 
+//////////////settings
+
+void MainWindow::save_setting() {
+    settings->setValue("projection_type", projection_type);
+    settings->setValue("line_type", line_type);
+
+    settings->setValue("line_width", line_width);
+
+    settings->setValue("points_type", points_type);
+    settings->setValue("points_size", points_size);
+
+    settings->setValue("back_color", back_color);
+    settings->setValue("line_color", line_color);
+
+    settings->setValue("fullname", fullname);
+}
+
+void MainWindow::load_settings() {
+
+    projection_type = settings->value("projection_type").toInt();
+    line_type = settings->value("line_type").toInt();
+    line_width = settings->value("line_width").toInt();
+
+    points_type = settings->value("points_type").toInt();
+    points_size = settings->value("points_size").toInt();
+
+    back_color = settings->value("back_color").value<QColor>();
+    line_color = settings->value("line_color").value<QColor>();
+
+    fullname = settings->value("fullname").toString();
+
+    switch (projection_type)
+    {
+    case 0:
+        ui->parallel_projection_rb->setChecked(true);
+        ui->central_projection_rb->setChecked(false);
+        break;
+    case 1:
+        ui->parallel_projection_rb->setChecked(false);
+        ui->central_projection_rb->setChecked(true);
+    default:
+        break;
+    }
+
+    switch (line_type)
+    {
+    case 0:
+        ui->solid_line_rb->setChecked(true);
+        ui->dotted_line_rb->setChecked(false);
+        break;
+    case 1:
+        ui->solid_line_rb->setChecked(false);
+        ui->dotted_line_rb->setChecked(true);
+    default:
+        break;
+    }
+
+    switch (points_type)
+    {
+    case 0:
+        ui->absent_point_rb->setChecked(true);
+        ui->box_point_rb->setChecked(false);
+        ui->sphere_point_rb->setChecked(false);
+        break;
+    case 1:
+        ui->absent_point_rb->setChecked(false);
+        ui->box_point_rb->setChecked(true);
+        ui->sphere_point_rb->setChecked(false);
+    case 2:
+        ui->absent_point_rb->setChecked(false);
+        ui->box_point_rb->setChecked(false);
+        ui->sphere_point_rb->setChecked(true);
+    default:
+        break;
+    }
+
+    ui->line_width_spinbox->setValue(line_width);
+    ui->points_size_spinbox->setValue(points_size);
+
+    ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
+    file_opened = 1;
+//            num_of_vertexes =
+//            num_of_polygons =
+    ui->polygons_label->setText(QString::number(num_of_polygons));
+    ui->vertexes_label->setText(QString::number(num_of_vertexes));
 
 
+#ifdef QT_DEBUG
+//    ui->Color_button->setAutoFillBackground(true);
+//    ui->Color_button->setStyleSheet(QString("background-color: %1").arg(back_color.name(QColor::HexArgb)));
+//    ui->Color_button->update();
+
+//    ui->Color_button_2->setAutoFillBackground(true);
+//    ui->Color_button_2->setStyleSheet(QString("background-color: %1").arg(line_color.name(QColor::HexArgb)));
+//    ui->Color_button_2->update();
+#endif
+}
+
+//////////////settings
 
 void MainWindow::on_parallel_projection_rb_clicked()
 {
@@ -134,14 +231,37 @@ void MainWindow::on_Color_button_2_clicked()
 }
 
 
-void MainWindow::save_setting() {
 
+
+void MainWindow::on_points_size_spinbox_valueChanged(int arg1)
+{
+    points_size = arg1;
 }
 
-void MainWindow::load_settings() {
-//    settings->value("title", "Mainform");
+
+
+
+
+void MainWindow::on_absent_point_rb_clicked()
+{
+    points_type = 0;
 }
 
 
+void MainWindow::on_sphere_point_rb_clicked()
+{
+    points_type = 2;
+}
 
+
+void MainWindow::on_box_point_rb_clicked()
+{
+    points_type = 1;
+}
+
+
+void MainWindow::on_line_width_spinbox_valueChanged(int arg1)
+{
+    line_width = arg1;
+}
 
