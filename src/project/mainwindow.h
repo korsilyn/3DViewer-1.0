@@ -7,6 +7,7 @@
 #include <QColor>
 #include <QRadioButton>
 #include <QSettings>
+#include <QWheelEvent>
 
 #include "myglwidget.h"
 
