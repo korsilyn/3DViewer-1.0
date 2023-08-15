@@ -8,6 +8,7 @@
 #include <QRadioButton>
 #include <QSettings>
 #include <QWheelEvent>
+#include <QMouseEvent>
 
 #include "myglwidget.h"
 
@@ -24,6 +25,11 @@ public:
     ~MainWindow();
     void save_setting();
     void load_settings();
+
+    void wheelEvent(QWheelEvent * event);
+    void mousePressEvent (QMouseEvent * event);
+    void mouseMoveEvent (QMouseEvent * event);
+    void mouseReleaseEvent (QMouseEvent * event);
 
     QString fullname;
     unsigned int num_of_vertexes = 0;
@@ -91,6 +97,8 @@ private slots:
     void on_box_point_rb_clicked();
 
     void on_line_width_spinbox_valueChanged(int arg1);
+
+    void on_but_reset_clicked();
 
 private:
     Ui::MainWindow *ui;

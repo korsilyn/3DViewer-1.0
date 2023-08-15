@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    view->show();
     settings = new QSettings(this);
     load_settings();
+    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
 }
 
 MainWindow::~MainWindow()
@@ -265,3 +266,40 @@ void MainWindow::on_line_width_spinbox_valueChanged(int arg1)
     line_width = arg1;
 }
 
+
+void MainWindow::on_but_reset_clicked()
+{
+    ///gui
+    ui->line_width_spinbox->setValue(1);
+    ui->points_size_spinbox->setValue(1);
+    ui->scale_slider->setValue(10);
+    ui->spin_x->setValue(0);
+    ui->spin_y->setValue(0);
+    ui->spin_z->setValue(0);
+    ui->slider_ox->setValue(0);
+    ui->slider_oy->setValue(0);
+    ui->slider_oz->setValue(0);
+    ui->central_projection_rb->setChecked(true);
+    ui->solid_line_rb->setChecked(true);
+    ui->sphere_point_rb->setChecked(true);
+    ///values
+    scale = 1;
+    x_shift = 0;
+    y_shift = 0;
+    z_shift = 0;
+    oz_rotate = 0;
+    oy_rotate = 0;
+    ox_rotate = 0;
+    projection_type = 1;
+    line_type = 0;
+    points_type = 2;
+    line_width = 1;
+    points_size = 1;
+
+}
+
+
+void MainWindow::wheelEvent(QWheelEvent * event)
+{
+//    qDebug() << 123;
+}
