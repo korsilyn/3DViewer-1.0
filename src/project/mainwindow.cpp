@@ -10,18 +10,20 @@ MainWindow::MainWindow(QWidget *parent)
 //    view->show();
     settings = new QSettings(this);
     load_settings();
-    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
+//    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
 }
 
 MainWindow::~MainWindow()
 {
     save_setting();
+    delete settings;
     delete ui;
 }
 
 void MainWindow::on_but_openFile_clicked()
 {
-    fullname = QFileDialog::getOpenFileName(this, tr("Open figure"), QLatin1String("*.obj"));
+//    fullname = QFileDialog::getOpenFileName(this, tr("Open figure"), QLatin1String("*.obj"));
+    fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), "~/", tr("Obj Files (*.obj)"));
     if (fullname.mid(fullname.lastIndexOf('.')+1) == "obj") {
             ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
             file_opened = 1;
@@ -38,9 +40,9 @@ void MainWindow::on_but_openFile_clicked()
 
 void MainWindow::on_but_build_clicked()
 {
-//    if (file_opened) {
-
-//    }
+    if (file_opened) {
+        view->paintGL();
+    }
 
 }
 
@@ -175,8 +177,8 @@ void MainWindow::load_settings() {
 
     ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
     file_opened = 1;
-//            num_of_vertexes =
-//            num_of_polygons =
+//    num_of_vertexes = view->data.vertex_count;
+//    num_of_polygons = view->data.vertex_indices_count;
     ui->polygons_label->setText(QString::number(num_of_polygons));
     ui->vertexes_label->setText(QString::number(num_of_vertexes));
 
@@ -299,7 +301,10 @@ void MainWindow::on_but_reset_clicked()
 }
 
 
-void MainWindow::wheelEvent(QWheelEvent * event)
-{
-//    qDebug() << 123;
-}
+//void MainWindow::wheelEvent(QWheelEvent * event)
+//{
+////    qDebug() << 123;
+//}
+
+
+

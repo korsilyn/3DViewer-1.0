@@ -8,16 +8,20 @@
 #include <QtOpenGL>
 #include <glu.h>
 #include <gl.h>
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>	
+//#include <glew.h>
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../glm/gtc/type_ptr.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 extern "C" {
-	#include "../helpers/s21_3dviewer.h"
-	#include "../helpers/s21_parse.h"
+//    #include "../helpers/s21_3dviewer.h"
+    #include "../helpers/s21_parse.h"
 }
 
-class MyGLWidget : public QOpenGLWidget
+class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
     explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
@@ -29,20 +33,28 @@ public:
     float edgeThickness;
     int projectionType;
 
-    // OpenGL shaders
-    GLuint vertexVBO;
-    GLuint edgeIBO;
-    GLuint shaderProgram;
+
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
 
-protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+protected:
+
+
 private:
+    std::string ReadShaderFromFile(const char *file);
     ~MyGLWidget() override;
+
+    // OpenGL shaders
+    GLuint vertexVBO;
+    GLuint edgeIBO;
+    GLuint shaderProgram;
+    GLuint vertexShader;
+    GLuint fragmentShader;
+
 };
 
 #endif // MYGLWIDGET_H
