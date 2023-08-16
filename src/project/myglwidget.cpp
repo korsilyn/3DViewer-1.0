@@ -4,6 +4,11 @@
     MyGLWidget::MyGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
     }
 
+	MyGLWidget::~MyGLWidget() {
+		s21_dealloc_data(&data);
+		glDeleteProgram(shaderProgram);
+	}
+
     void MyGLWidget::initializeGL()
     {
         initializeOpenGLFunctions();
@@ -12,10 +17,16 @@
 	modelMatrix = glm::mat4(1.0f);
 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, "../shaders/vertex.glsl", NULL);
+	
+	std::string vertexShaderCode = ReadShaderFromFile("../shaders/vertex.glsl");
+	std::string fragmentShaderCode = ReadShaderFromFile("../shaders/fragment.glsl");
+	const char *vertexShaderSource = vertexShaderCode.c_str();
+	const char *fragmentShaderSource = fragmentShaderCode.c_str();
+
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, "../shaders/vertex.glsl", NULL);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
 	shaderProgram = glCreateProgram();
@@ -54,18 +65,61 @@
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(shaderProgram);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edgeIBO);
 	if (projectionType == 0) {
 		projectionMatrix = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, heigth / 2.0f, -100.0f, 100.0f);
 	} else {
 		projectionMatrix = glm::perspective(glm::radiands(45), width / height, -100.0f, 100.0f);
 	}
 
+	// set uniforms
+	GLint modelMatrixLoc = glGetUniformLocation(shaderProgram, "modelMatrix");
+	glUniformMatrix4fv(modelMatrixLoc, GL_FALSE, glm::value_ptr(modelMatrix));
+	GLint projectionMatrixLoc = glGetUniformLocation(shaderProgram, "projecionMatrix");
+	glUniformMatrix4fv(projectionMatrixLoc, GL_FALSE, glm::value_ptr(projectionMatrix));
+	GLint vertexRenderingModeLoc = glGetUniformLocation(shaderProgram, "vertexRenderingMode");
+	glUniformMatrix1i(vertexRenderingModeLoc, vertexRenderingMode);
+	GLint edgeRenderingModeLoc = glGetUniformLocation(shaderProgram, "edgeRenderingMode");
+	glUniformMatrix1i(edgeRenderingModeLoc, edgeRenderingMode);
+	GLint vertexSizeLoc = glGetUniformLocation(shaderProgram, "vertexSize");
+	glUniformMatrix1f(vertexSizeLoc, vertexSize);
+	GLint edgeThicknessLoc = glGetUniformLocation(shaderProgram, "edgeThickness");
+	glUniformMatrix1f(edgeThicknessLoc, edgeThickness);
+	/*
+	* GLint vertexColorLoc = glGetUniformLocation(shaderProgram, "vertexColor");
+	* glUniformMatrix4f(vertexColorLoc, vertexColor.r, vertexColor.g, vertexColor.b, vertexColor.a);
+	* GLint edgeColorLoc = glGetUniformLocation(shaderProgram, "edgeColor");
+	* glUniformMatrix4f(edgeColorLoc, edgeColor.r, edgeColor.g, edgeColor.b, edgeColor.a);
+	*/
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edgeIBO);
+	
+	GLint positionAttribLoc = glGetAttribLocation(shaderProgram, "position");
+	glEnableVertexAttribArray(positionAttribLoc);
+
+	glVertexAttribPointer(positionAttribLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count);
+	glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
+
+	glDisableVertexAttribArray(positionAttribLoc);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glUseProgram(0);
     }
+
+std::string ReadShaderFromFile(const char *file) {
+	std::string shaderCode;
+	std::ifstream shaderFile(file);
+	if(shaderFile.is_open()) {
+		std::stringstream shaderStream;
+		shaderStream << shaderFuke.rdbuf();
+		shaderCode = shaderStream.str();
+		shaderFile.close();
+	}
+	else std::cerr << "Unable to open file!" << std::endl;
+	return shaderCode;
+}
 
 /*
  * rotate:
