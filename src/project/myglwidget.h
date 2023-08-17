@@ -25,14 +25,14 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 public:
     explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
-
+    ~MyGLWidget() override;
     obj_data data;
     int vertexRenderingMode;
     int edgeRenderingMode;
     float vertexSize;
     float edgeThickness;
     int projectionType;
-
+    QString fileFullName;
 
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
@@ -46,7 +46,7 @@ protected:
 
 private:
     std::string ReadShaderFromFile(const char *file);
-    ~MyGLWidget() override;
+
 
     // OpenGL shaders
     GLuint vertexVBO;

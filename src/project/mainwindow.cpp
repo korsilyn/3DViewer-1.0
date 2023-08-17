@@ -6,11 +6,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    view = new MyGLWidget(this);
-//    view->show();
+    view = ui->openGLWidget;
     settings = new QSettings(this);
     load_settings();
 //    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
+//    delete view;
 }
 
 MainWindow::~MainWindow()
@@ -22,14 +22,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_but_openFile_clicked()
 {
-//    fullname = QFileDialog::getOpenFileName(this, tr("Open figure"), QLatin1String("*.obj"));
+
     fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), "~/", tr("Obj Files (*.obj)"));
     if (fullname.mid(fullname.lastIndexOf('.')+1) == "obj") {
             ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
             file_opened = 1;
+            view->fileFullName = fullname;
+//            qDebug() << fullname;
 //            num_of_vertexes =
-//            num_of_polygons =
-            ui->polygons_label->setText(QString::number(num_of_polygons));
+//            num_of_edges =
+            ui->polygons_label->setText(QString::number(num_of_edges));
             ui->vertexes_label->setText(QString::number(num_of_vertexes));
     } else {
         ui->label->setText("Wrong file");
@@ -43,7 +45,6 @@ void MainWindow::on_but_build_clicked()
     if (file_opened) {
         view->paintGL();
     }
-
 }
 
 void MainWindow::on_spin_x_valueChanged(double arg1)
@@ -149,6 +150,7 @@ void MainWindow::load_settings() {
     case 1:
         ui->solid_line_rb->setChecked(false);
         ui->dotted_line_rb->setChecked(true);
+        break;
     default:
         break;
     }
@@ -164,10 +166,12 @@ void MainWindow::load_settings() {
         ui->absent_point_rb->setChecked(false);
         ui->box_point_rb->setChecked(true);
         ui->sphere_point_rb->setChecked(false);
+        break;
     case 2:
         ui->absent_point_rb->setChecked(false);
         ui->box_point_rb->setChecked(false);
         ui->sphere_point_rb->setChecked(true);
+        break;
     default:
         break;
     }
@@ -177,21 +181,14 @@ void MainWindow::load_settings() {
 
     ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
     file_opened = 1;
+    view->fileFullName = fullname;
 //    num_of_vertexes = view->data.vertex_count;
-//    num_of_polygons = view->data.vertex_indices_count;
-    ui->polygons_label->setText(QString::number(num_of_polygons));
+//    num_of_edges = view->data.vertex_indices_count;
+    ui->polygons_label->setText(QString::number(num_of_edges));
     ui->vertexes_label->setText(QString::number(num_of_vertexes));
 
 
-#ifdef QT_DEBUG
-//    ui->Color_button->setAutoFillBackground(true);
-//    ui->Color_button->setStyleSheet(QString("background-color: %1").arg(back_color.name(QColor::HexArgb)));
-//    ui->Color_button->update();
 
-//    ui->Color_button_2->setAutoFillBackground(true);
-//    ui->Color_button_2->setStyleSheet(QString("background-color: %1").arg(line_color.name(QColor::HexArgb)));
-//    ui->Color_button_2->update();
-#endif
 }
 
 //////////////settings
@@ -233,6 +230,11 @@ void MainWindow::on_Color_button_2_clicked()
     line_color = QColorDialog::getColor();
 }
 
+void MainWindow::on_Color_button_3_clicked()
+{
+    vertex_color = QColorDialog::getColor();
+}
+
 
 
 
@@ -240,10 +242,6 @@ void MainWindow::on_points_size_spinbox_valueChanged(int arg1)
 {
     points_size = arg1;
 }
-
-
-
-
 
 void MainWindow::on_absent_point_rb_clicked()
 {
@@ -305,6 +303,8 @@ void MainWindow::on_but_reset_clicked()
 //{
 ////    qDebug() << 123;
 //}
+
+
 
 
 

@@ -12,13 +12,13 @@
     void MyGLWidget::initializeGL()
     {
     initializeOpenGLFunctions();
-    s21_read_obj_file(&data, "../objects/cat.obj");
+    std::string obj_fullname = "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
+    s21_read_obj_file(&data, (char*)obj_fullname.c_str());
 	modelMatrix = glm::mat4(1.0f);
 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	
-	std::string vertexShaderCode = ReadShaderFromFile("../shaders/vertex.glsl");
-	std::string fragmentShaderCode = ReadShaderFromFile("../shaders/fragment.glsl");
+    std::string vertexShaderCode = ReadShaderFromFile("/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
+    std::string fragmentShaderCode = ReadShaderFromFile("/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/fragment.glsl");
 	const char *vertexShaderSource = vertexShaderCode.c_str();
 	const char *fragmentShaderSource = fragmentShaderCode.c_str();
 

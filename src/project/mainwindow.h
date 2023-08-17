@@ -33,7 +33,7 @@ public:
 
     QString fullname;
     unsigned int num_of_vertexes = 0;
-    unsigned int num_of_polygons = 0;
+    unsigned int num_of_edges = 0;
 
     double scale = 1;
     double x_shift = 0;
@@ -46,6 +46,7 @@ public:
     MyGLWidget* view;
     QColor back_color;
     QColor line_color;
+    QColor vertex_color;
 
     int projection_type; //0-parallel 1-central
     int line_type; //0-solid 1-dotted
@@ -101,6 +102,8 @@ private slots:
     void on_but_reset_clicked();
 
 
+
+    void on_Color_button_3_clicked();
 
 private:
     Ui::MainWindow *ui;
