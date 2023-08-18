@@ -1,7 +1,7 @@
 #include "myglwidget.h"
 
     MyGLWidget::MyGLWidget(QWidget *parent) : QOpenGLWidget{parent} {
-
+            printf("constructor called\n");
     }
 
 	MyGLWidget::~MyGLWidget() {
@@ -11,6 +11,8 @@
 
     void MyGLWidget::initializeGL()
     {
+        printf("initializeGL called\n");
+
     initializeOpenGLFunctions();
     std::string obj_fullname = "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
     s21_read_obj_file(&data, (char*)obj_fullname.c_str());
@@ -49,7 +51,7 @@
 	glUseProgram(shaderProgram);
 	glEnable(GL_DEPTH_TEST);
 	glUseProgram(0);
-    this->update();
+
     }
 
     void MyGLWidget::resizeGL(int w, int h)
@@ -58,14 +60,19 @@
 //        m_projection.setToIdentity();
 //        m_projection.perspective(45.0f, w / float(h), 0.01f, 100.0f);
 //        ...
+        w;
+        h;
     }
 
     void MyGLWidget::paintGL()
     {
+
+    printf("paintGL called\n");
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    double width = 1;
-    double height = 1;
+    double width = 570;
+    double height = 450;
 	glUseProgram(shaderProgram);
 	if (projectionType == 0) {
         projectionMatrix = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f);
@@ -85,12 +92,13 @@
     glUniform1f(vertexSizeLoc, vertexSize);
 	GLint edgeThicknessLoc = glGetUniformLocation(shaderProgram, "edgeThickness");
     glUniform1f(edgeThicknessLoc, edgeThickness);
-	/*
-	* GLint vertexColorLoc = glGetUniformLocation(shaderProgram, "vertexColor");
-    * glUniform4f(vertexColorLoc, vertexColor.r, vertexColor.g, vertexColor.b, vertexColor.a);
-	* GLint edgeColorLoc = glGetUniformLocation(shaderProgram, "edgeColor");
-    * glUniform4f(edgeColorLoc, edgeColor.r, edgeColor.g, edgeColor.b, edgeColor.a);
-	*/
+
+
+    GLint vertexColorLoc = glGetUniformLocation(shaderProgram, "vertexColor");
+    glUniform4f(vertexColorLoc, vertexColor.red(), vertexColor.green(), vertexColor.blue(), vertexColor.alpha());
+    GLint edgeColorLoc = glGetUniformLocation(shaderProgram, "edgeColor");
+    glUniform4f(edgeColorLoc, edgeColor.red(), edgeColor.green(), edgeColor.blue(), edgeColor.alpha());
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edgeIBO);
@@ -120,6 +128,11 @@ std::string MyGLWidget::ReadShaderFromFile(const char *file) {
 	}
     else std::cerr << "Unable to open file!" << std::endl;
 	return shaderCode;
+}
+
+void MyGLWidget::doTheThing() {
+    printf("doTheThing called\n");
+    this->paintGL();
 }
 
 /*

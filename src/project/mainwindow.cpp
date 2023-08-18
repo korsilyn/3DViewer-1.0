@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+//    ui->centralwidget->setFixedSize(950,500);
+    this->setFixedSize(950,550);
     view = ui->openGLWidget;
     settings = new QSettings(this);
     load_settings();
@@ -28,6 +30,9 @@ void MainWindow::on_but_openFile_clicked()
             ui->label->setText("filename = "+ fullname.mid(fullname.lastIndexOf('/')+1));
             file_opened = 1;
             view->fileFullName = fullname;
+            view->filePath = QString(fullname.mid(0, fullname.lastIndexOf('/')-1)).toStdString();
+            view->filePath = QString(fullname.mid(0, fullname.lastIndexOf('/')-1)).toStdString();
+//            printf("%s\n", QString(view->filePath);
 //            qDebug() << fullname;
 //            num_of_vertexes =
 //            num_of_edges =
@@ -43,7 +48,7 @@ void MainWindow::on_but_openFile_clicked()
 void MainWindow::on_but_build_clicked()
 {
     if (file_opened) {
-        view->paintGL();
+        view->doTheThing();
     }
 }
 
@@ -91,10 +96,10 @@ void MainWindow::on_scale_slider_sliderMoved(int position)
 void MainWindow::on_Color_button_clicked()
 {
     back_color = QColorDialog::getColor();
-#ifdef QT_DEBUG
-    QString style = "background: rgb(%1, %2, %3);";
-    this->ui->label->setStyleSheet(style.arg(back_color.red()).arg(back_color.green()).arg(back_color.blue()));
-#endif
+//#ifdef QT_DEBUG
+//    QString style = "background: rgb(%1, %2, %3);";
+//    this->ui->label->setStyleSheet(style.arg(back_color.red()).arg(back_color.green()).arg(back_color.blue()));
+//#endif
 }
 
 //////////////settings
@@ -228,11 +233,13 @@ void MainWindow::on_dotted_line_rb_clicked()
 void MainWindow::on_Color_button_2_clicked()
 {
     line_color = QColorDialog::getColor();
+    view->edgeColor = line_color;
 }
 
 void MainWindow::on_Color_button_3_clicked()
 {
     vertex_color = QColorDialog::getColor();
+    view->vertexColor = vertex_color;
 }
 
 

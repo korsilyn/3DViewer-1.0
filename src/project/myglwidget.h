@@ -27,19 +27,24 @@ public:
     explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
     ~MyGLWidget() override;
     obj_data data;
-    int vertexRenderingMode;
-    int edgeRenderingMode;
-    float vertexSize;
-    float edgeThickness;
-    int projectionType;
+    int vertexRenderingMode = 1;
+    int edgeRenderingMode = 0;
+    float vertexSize = 1.0;
+    float edgeThickness = 1.0;
+    int projectionType = 0;
     QString fileFullName;
+    std::string filePath;
 
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
 
+    QColor vertexColor = QColor(255,255,255,255);
+    QColor edgeColor = QColor(255,255,255,255);
+
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
+    void doTheThing();
 
 protected:
 

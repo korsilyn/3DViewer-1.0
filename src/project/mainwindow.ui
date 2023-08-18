@@ -14,6 +14,9 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <widget class="QPushButton" name="but_openFile">
     <property name="geometry">
      <rect>
@@ -169,8 +172,8 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>571</width>
-      <height>451</height>
+      <width>570</width>
+      <height>450</height>
      </rect>
     </property>
    </widget>
