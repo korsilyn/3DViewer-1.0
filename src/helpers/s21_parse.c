@@ -1,19 +1,16 @@
 #include "s21_parse.h"
 
-// Maybe need to use calloc instead of malloc, will test later
-// Teoretically, if vector have xy, z will be random number and model will not
-// render properly
 int s21_malloc_data(obj_data *data) {
   int status = OK;
 
   if (data->vertex_count)
     data->vertex_array =
-        malloc(data->vertex_count * 3 * sizeof(double));  // * 3 bc xyz dots
+        calloc(data->vertex_count * 3, sizeof(double));  // * 3 bc xyz dots
 
   if (data->vertex_indices_count)
     data->vertex_indices_array =
-        malloc(data->vertex_indices_count * 2 *
-               sizeof(double));  // * 2 bc face have 2 coords
+        calloc(data->vertex_indices_count * 2,
+               sizeof(int));  // * 2 bc face have 2 coords
 
   if (!data->vertex_array || !data->vertex_indices_array) status = ERROR;
 
@@ -35,7 +32,7 @@ int s21_read_obj_file(obj_data *data, char *file) {
   if (!data || !file) return ERROR;
   int status = OK;
   FILE *fp = fopen(file, "r");
-  if (file) {
+  if (fp) {
     s21_data_count(data, fp);
     status = s21_malloc_data(data);
     if (status == OK) {
