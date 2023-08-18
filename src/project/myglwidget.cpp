@@ -38,7 +38,7 @@
 
 	glGenBuffers(1, &vertexVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * data.vertex_count, data.vertex_array, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * data.vertex_count, data.vertex_array, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &edgeIBO);
@@ -98,7 +98,7 @@
 	GLint positionAttribLoc = glGetAttribLocation(shaderProgram, "position");
 	glEnableVertexAttribArray(positionAttribLoc);
 
-	glVertexAttribPointer(positionAttribLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(positionAttribLoc, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count);
 	glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
 
