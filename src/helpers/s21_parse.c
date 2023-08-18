@@ -5,7 +5,7 @@ int s21_malloc_data(obj_data *data) {
 
   if (data->vertex_count)
     data->vertex_array =
-        calloc(data->vertex_count * 3, sizeof(double));  // * 3 bc xyz dots
+        calloc(data->vertex_count * 4, sizeof(double));  // * 4 bc xyzw dots
 
   if (data->vertex_indices_count)
     data->vertex_indices_array =
@@ -72,11 +72,13 @@ int s21_data_parse(obj_data *data, FILE *fp) {
   while (getline(&line, &len, fp) != EOF) {
     if (strncmp(line, "v ", 2) == 0) {
       vertex_count++;
-      double x, y, z;
-      sscanf(line, "v %lf %lf %lf", &x, &y, &z);
+      double x, y, z, w;
+      int cnt = sscanf(line, "v %lf %lf %lf %lf", &x, &y, &z, &w);
       data->vertex_array[index++] = x;
       data->vertex_array[index++] = y;
       data->vertex_array[index++] = z;
+      if (cnt == 4) data->vertex_array[index++] = w;
+      else data->vertex_array[index++] = 1.0;
     } else if (strncmp(line, "f ", 2) == 0) {
       int first_index = 0;
       int is_first_index = 0;
@@ -100,7 +102,7 @@ int s21_data_parse(obj_data *data, FILE *fp) {
   }
 
   if (line) free(line);
-  if (!data->vertex_array[data->vertex_count * 3 - 1] ||
+  if (!data->vertex_array[data->vertex_count * 4 - 1] ||
       !data->vertex_indices_array[data->vertex_indices_count * 2 - 1])
     status = ERROR;
 
