@@ -77,8 +77,10 @@ int s21_data_parse(obj_data *data, FILE *fp) {
       data->vertex_array[index++] = x;
       data->vertex_array[index++] = y;
       data->vertex_array[index++] = z;
-      if (cnt == 4) data->vertex_array[index++] = w;
-      else data->vertex_array[index++] = 1.0;
+      if (cnt == 4)
+        data->vertex_array[index++] = w;
+      else
+        data->vertex_array[index++] = 1.0;
     } else if (strncmp(line, "f ", 2) == 0) {
       int first_index = 0;
       int is_first_index = 0;
