@@ -37,6 +37,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   std::string filePath;
 
   glm::mat4 modelMatrix;
+  glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
 
   QColor vertexColor = QColor(255, 255, 255, 255);
@@ -52,7 +53,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   std::string ReadShaderFromFile(const char *file);
 
   // OpenGL shaders
-  GLuint VAO, VBO;
+  GLuint VAO, VBO, EBO;
   GLuint shaderProgram;
   GLuint vertexShader;
   GLuint fragmentShader;

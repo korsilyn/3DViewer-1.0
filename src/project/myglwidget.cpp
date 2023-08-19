@@ -6,6 +6,13 @@ MyGLWidget::MyGLWidget(QWidget *parent) : QOpenGLWidget{parent} {
 
 MyGLWidget::~MyGLWidget() {
   s21_dealloc_data(&data);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  
+  glDeleteVertexArrays(1, &VAO);
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &EBO);
   glDeleteProgram(shaderProgram);
 }
 
@@ -15,10 +22,13 @@ void MyGLWidget::initializeGL() {
   initializeOpenGLFunctions();
   std::string obj_fullname =
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
-  s21_read_obj_file(&data, (char *)obj_fullname.c_str());
-  modelMatrix = glm::mat4(1.0f);
+  int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
+  if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
-  vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  modelMatrix = glm::mat4(1.0f);
+  viewMatrix = glm::mat4(1.0f);
+  viewMatrx = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+
   std::string vertexShaderCode = ReadShaderFromFile(
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
   std::string fragmentShaderCode = ReadShaderFromFile(
@@ -26,32 +36,52 @@ void MyGLWidget::initializeGL() {
   const char *vertexShaderSource = vertexShaderCode.c_str();
   const char *fragmentShaderSource = fragmentShaderCode.c_str();
 
+  vertexShader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
   glCompileShader(vertexShader);
+  char infoLog[512];
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success)
+  {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+  }
   fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
   glCompileShader(fragmentShader);
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  if (!success)
+  {
+    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+  }
 
   shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glLinkProgram(shaderProgram);
-
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+  }
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+  glGenBuffers(1, &EBO);
+
+  glBindVertexArray(VAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * data.vertex_count,
                data.vertex_array, GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLint) * 2 * data.vertex_indices_count, data.vertex_indices_array, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizof(GLFloat), (void*)0);
 
-  glGenBuffers(1, &edgeIBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edgeIBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-               sizeof(GLuint) * 2 * data.vertex_indices_count,
-               data.vertex_indices_array, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);  
 
   glUseProgram(shaderProgram);
   glEnable(GL_DEPTH_TEST);
@@ -74,14 +104,16 @@ void MyGLWidget::paintGL() {
 
   double width = 570;
   double height = 450;
-  glUseProgram(shaderProgram);
   if (projectionType == 0) {
     projectionMatrix =
-        glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f);
+        glm::ortho(0.0f, width, 0.0f, height, 0.1f, 100.0f);
   } /*else {
-      projectionMatrix = glm::perspective(glm::radians(45.0), width / height,
-  -100.0f, 100.0f);
+      projectionMatrix = glm::perspective(glm::radians(45.0), (float)width / (float)height,
+  0.1f, 100.0f);
   }*/
+
+  glUseProgram(shaderProgram);
+  glBindVertexAttay(VAO);
   // set uniforms
   GLint modelMatrixLoc = glGetUniformLocation(shaderProgram, "modelMatrix");
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
@@ -89,7 +121,9 @@ void MyGLWidget::paintGL() {
       glGetUniformLocation(shaderProgram, "projecionMatrix");
   glUniformMatrix4fv(projectionMatrixLoc, 1, GL_FALSE,
                      glm::value_ptr(projectionMatrix));
-  GLint vertexRenderingModeLoc =
+  GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
+  glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+  /*GLint vertexRenderingModeLoc =
       glGetUniformLocation(shaderProgram, "vertexRenderingMode");
   glUniform1i(vertexRenderingModeLoc, vertexRenderingMode);
   GLint edgeRenderingModeLoc =
@@ -102,25 +136,14 @@ void MyGLWidget::paintGL() {
 
   GLint vertexColorLoc = glGetUniformLocation(shaderProgram, "vertexColor");
   glUniform4f(vertexColorLoc, vertexColor.red(), vertexColor.green(),
-              vertexColor.blue(), vertexColor.alpha());
+              vertexColor.blue(), vertexColor.alpha()); */
   GLint edgeColorLoc = glGetUniformLocation(shaderProgram, "edgeColor");
   glUniform4f(edgeColorLoc, edgeColor.red(), edgeColor.green(),
               edgeColor.blue(), edgeColor.alpha());
 
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edgeIBO);
-
-  GLint positionAttribLoc = glGetAttribLocation(shaderProgram, "position");
-  glEnableVertexAttribArray(positionAttribLoc);
-
-  glVertexAttribPointer(positionAttribLoc, 4, GL_FLOAT, GL_FALSE, 0, 0);
   if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
 
-  glDisableVertexAttribArray(positionAttribLoc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glUseProgram(0);
 }
 
