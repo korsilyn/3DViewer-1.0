@@ -9,7 +9,7 @@ MyGLWidget::~MyGLWidget() {
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  
+
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
@@ -41,19 +41,19 @@ void MyGLWidget::initializeGL() {
   glCompileShader(vertexShader);
   char infoLog[512];
   glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success)
-  {
+  if (!success) {
     glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
   }
   fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
   glCompileShader(fragmentShader);
   glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success)
-  {
+  if (!success) {
     glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
   }
 
   shaderProgram = glCreateProgram();
@@ -63,7 +63,8 @@ void MyGLWidget::initializeGL() {
   glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
   if (!success) {
     glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+              << infoLog << std::endl;
   }
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
@@ -77,11 +78,14 @@ void MyGLWidget::initializeGL() {
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * data.vertex_count,
                data.vertex_array, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLint) * 2 * data.vertex_indices_count, data.vertex_indices_array, GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizof(GLFloat), (void*)0);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+               sizeof(GLint) * 2 * data.vertex_indices_count,
+               data.vertex_indices_array, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizof(GLFloat),
+                        (void *)0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);  
+  glBindVertexArray(0);
 
   glUseProgram(shaderProgram);
   glEnable(GL_DEPTH_TEST);
@@ -105,11 +109,10 @@ void MyGLWidget::paintGL() {
   double width = 570;
   double height = 450;
   if (projectionType == 0) {
-    projectionMatrix =
-        glm::ortho(0.0f, width, 0.0f, height, 0.1f, 100.0f);
+    projectionMatrix = glm::ortho(0.0f, width, 0.0f, height, 0.1f, 100.0f);
   } /*else {
-      projectionMatrix = glm::perspective(glm::radians(45.0), (float)width / (float)height,
-  0.1f, 100.0f);
+      projectionMatrix = glm::perspective(glm::radians(45.0), (float)width /
+  (float)height, 0.1f, 100.0f);
   }*/
 
   glUseProgram(shaderProgram);
