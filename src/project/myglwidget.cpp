@@ -27,7 +27,7 @@ void MyGLWidget::initializeGL() {
 
   modelMatrix = glm::mat4(1.0f);
   viewMatrix = glm::mat4(1.0f);
-  viewMatrx = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+  viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
   std::string vertexShaderCode = ReadShaderFromFile(
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
@@ -81,7 +81,7 @@ void MyGLWidget::initializeGL() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                sizeof(GLint) * 2 * data.vertex_indices_count,
                data.vertex_indices_array, GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizof(GLFloat),
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (GLsizei)(4 * sizeof(float)), //sizeof(float) == sizeof(GLFloat)
                         (void *)0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -109,14 +109,14 @@ void MyGLWidget::paintGL() {
   double width = 570;
   double height = 450;
   if (projectionType == 0) {
-    projectionMatrix = glm::ortho(0.0f, width, 0.0f, height, 0.1f, 100.0f);
+    projectionMatrix = glm::ortho(0.0, 570, 0.0, 450, 1, 100.0);
   } /*else {
       projectionMatrix = glm::perspective(glm::radians(45.0), (float)width /
   (float)height, 0.1f, 100.0f);
   }*/
 
   glUseProgram(shaderProgram);
-  glBindVertexAttay(VAO);
+  glBindVertexArray(VAO);
   // set uniforms
   GLint modelMatrixLoc = glGetUniformLocation(shaderProgram, "modelMatrix");
   glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
