@@ -86,8 +86,8 @@ void MyGLWidget::initializeGL() {
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (GLsizei)(4 * sizeof(float)), //sizeof(float) == sizeof(GLFloat)
                         (void *)0);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  //glBindBuffer(GL_ARRAY_BUFFER, 0);
+  //glBindVertexArray(0);
 
   glUseProgram(shaderProgram);
   glEnable(GL_DEPTH_TEST);
@@ -158,7 +158,7 @@ void MyGLWidget::paintGL() {
 //  printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
 //  printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
 //  ///////
-  glUseProgram(0);
+  //glUseProgram(0);
 }
 
 std::string MyGLWidget::ReadShaderFromFile(const char *file) {
