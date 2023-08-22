@@ -5,6 +5,7 @@ MyGLWidget::MyGLWidget(QWidget *parent) : QOpenGLWidget{parent} {
 }
 
 MyGLWidget::~MyGLWidget() {
+  printf("destructor called\n");
   s21_dealloc_data(&data);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -23,8 +24,8 @@ void MyGLWidget::initializeGL() {
 
   std::string obj_fullname =
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
-  int error = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
-  if (!error) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
+  int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
+  if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
   modelMatrix = glm::mat4(1.0f);
   viewMatrix = glm::mat4(1.0f);
@@ -41,8 +42,8 @@ void MyGLWidget::initializeGL() {
   glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
   glCompileShader(vertexShader);
   char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &error);
-  if (!error) {
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
     glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
               << infoLog << std::endl;
@@ -50,8 +51,8 @@ void MyGLWidget::initializeGL() {
   fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
   glCompileShader(fragmentShader);
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &error);
-  if (!error) {
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
     glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
               << infoLog << std::endl;
@@ -61,8 +62,8 @@ void MyGLWidget::initializeGL() {
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glLinkProgram(shaderProgram);
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &error);
-  if (!error) {
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  if (!success) {
     glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
               << infoLog << std::endl;
@@ -127,7 +128,7 @@ void MyGLWidget::paintGL() {
       glGetUniformLocation(shaderProgram, "projecionMatrix");
   glUniformMatrix4fv(projectionMatrixLoc, 1, GL_FALSE,
                      glm::value_ptr(projectionMatrix));
-  GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
+  GLint viewMatrixLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
   glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
   /*GLint vertexRenderingModeLoc =

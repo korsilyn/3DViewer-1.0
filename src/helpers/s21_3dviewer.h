@@ -1,8 +1,8 @@
 #ifndef C8_3DVIEWER_S21_3DVIEWER_H
 #define C8_3DVIEWER_S21_3DVIEWER_H
 
-#define OK 0
-#define ERROR 1
+#define OK 1
+#define ERROR 0
 
 #include <math.h>
 #include <stdio.h>
