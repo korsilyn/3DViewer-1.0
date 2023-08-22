@@ -20,10 +20,11 @@ void MyGLWidget::initializeGL() {
   printf("initializeGL called\n");
 
   initializeOpenGLFunctions();
+
   std::string obj_fullname =
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
-  int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
-  if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
+  int error = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
+  if (!error) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
   modelMatrix = glm::mat4(1.0f);
   viewMatrix = glm::mat4(1.0f);
@@ -40,8 +41,8 @@ void MyGLWidget::initializeGL() {
   glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
   glCompileShader(vertexShader);
   char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &error);
+  if (!error) {
     glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
               << infoLog << std::endl;
@@ -49,8 +50,8 @@ void MyGLWidget::initializeGL() {
   fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
   glCompileShader(fragmentShader);
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &error);
+  if (!error) {
     glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
               << infoLog << std::endl;
@@ -60,8 +61,8 @@ void MyGLWidget::initializeGL() {
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glLinkProgram(shaderProgram);
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &error);
+  if (!error) {
     glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
               << infoLog << std::endl;
@@ -106,10 +107,12 @@ void MyGLWidget::paintGL() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
   double width = 570;
   double height = 450;
   if (projectionType == 0) {
-    projectionMatrix = glm::ortho(0.0, 570, 0.0, 450, 1, 100.0);
+    projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
+
   } /*else {
       projectionMatrix = glm::perspective(glm::radians(45.0), (float)width /
   (float)height, 0.1f, 100.0f);
@@ -126,6 +129,7 @@ void MyGLWidget::paintGL() {
                      glm::value_ptr(projectionMatrix));
   GLuint viewMatrixLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
   glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+
   /*GLint vertexRenderingModeLoc =
       glGetUniformLocation(shaderProgram, "vertexRenderingMode");
   glUniform1i(vertexRenderingModeLoc, vertexRenderingMode);
@@ -140,6 +144,7 @@ void MyGLWidget::paintGL() {
   GLint vertexColorLoc = glGetUniformLocation(shaderProgram, "vertexColor");
   glUniform4f(vertexColorLoc, vertexColor.red(), vertexColor.green(),
               vertexColor.blue(), vertexColor.alpha()); */
+
   GLint edgeColorLoc = glGetUniformLocation(shaderProgram, "edgeColor");
   glUniform4f(edgeColorLoc, edgeColor.red(), edgeColor.green(),
               edgeColor.blue(), edgeColor.alpha());
@@ -147,6 +152,11 @@ void MyGLWidget::paintGL() {
   if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
 
+
+//  ///////////
+//  printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
+//  printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
+//  ///////
   glUseProgram(0);
 }
 
