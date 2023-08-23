@@ -20,6 +20,25 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
+void MainWindow::send_params() {
+    view->scale = scale;
+    view->x_shift  = x_shift;
+    view->y_shift  = y_shift;
+    view->z_shift  = z_shift;
+    view->oz_rotate  = oz_rotate;
+    view->oy_rotate  = oy_rotate;
+    view->ox_rotate  = ox_rotate;
+
+    view->vertexRenderingMode = points_type;
+    view->edgeRenderingMode = line_type;
+    view->vertexSize = points_size;
+    view->edgeThickness = line_width;
+    view->projectionType = projection_type;
+
+    view->vertexColor = vertex_color;
+    view->edgeColor = line_color;
+}
+
 void MainWindow::on_but_openFile_clicked() {
   fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), "~/",
                                           tr("Obj Files (*.obj)"));

@@ -27,14 +27,14 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
   explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
   ~MyGLWidget() override;
+
   obj_data data = {0, NULL, 0, NULL};
+
   int vertexRenderingMode = 1;
   int edgeRenderingMode = 0;
   float vertexSize = 1.0;
   float edgeThickness = 1.0;
   int projectionType = 0;
-  QString fileFullName;
-  std::string filePath;
 
   glm::mat4 modelMatrix;
   glm::mat4 viewMatrix;
@@ -48,7 +48,20 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   void paintGL() override;
   void doTheThing();
 
- protected:
+  double scale = 1;
+  double x_shift = 0;
+  double y_shift = 0;
+  double z_shift = 0;
+  double oz_rotate = 0;
+  double oy_rotate = 0;
+  double ox_rotate = 0;
+
+  unsigned int num_of_vertexes = 0;
+  unsigned int num_of_edges = 0;
+
+  QString fileFullName;
+  std::string filePath;
+
  private:
   std::string ReadShaderFromFile(const char *file);
 

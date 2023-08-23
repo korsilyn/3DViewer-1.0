@@ -27,6 +27,9 @@ class MainWindow : public QMainWindow {
   void save_setting();
   void load_settings();
 
+  void send_params();
+  void send_changes();
+
   //    void wheelEvent(QWheelEvent * event);
   //    void mousePressEvent (QMouseEvent * event);
   //    void mouseMoveEvent (QMouseEvent * event);

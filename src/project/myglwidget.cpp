@@ -22,6 +22,9 @@ void MyGLWidget::initializeGL() {
 
   initializeOpenGLFunctions();
 
+//  printf("%p %p %p\n", &VAO, &VBO, &EBO);
+
+
   std::string obj_fullname =
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
   int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
