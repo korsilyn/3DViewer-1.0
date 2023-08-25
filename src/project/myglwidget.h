@@ -6,6 +6,8 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include <QWidget>
 #include <QtOpenGL>
 #include <QtOpenGLWidgets>
@@ -30,13 +32,14 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
 
   obj_data data = {0, NULL, 0, NULL};
 
-  int vertexRenderingMode = 1;
+  int vertexRenderingMode = 0;
   int edgeRenderingMode = 0;
   float vertexSize = 1.0;
   float edgeThickness = 1.0;
   int projectionType = 0;
 
   glm::mat4 modelMatrix;
+  glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
 
   QColor vertexColor = QColor(255, 255, 255, 255);
@@ -62,8 +65,10 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   std::string filePath;
 
  private:
+  std::string ReadShaderFromFile(const char *file);
+
   // OpenGL shaders
-  GLuint IBO, VBO, EBO;
+  GLuint VBO, EBO;
   QOpenGlShaderProgram shaderProgram;
 };
 

@@ -1,4 +1,4 @@
 #version 330 core
-uniform vec4 edgeColor;
+uniform vec4 color;
 
-void main() { gl_FragColor = edgeColor; }
+void main() { gl_FragColor = color; }
