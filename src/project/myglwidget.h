@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QtOpenGL>
 #include <QtOpenGLWidgets>
+#include <QMatrix4x4>
 // #include <glew.h>
 #include <fstream>
 #include <iostream>
@@ -36,11 +37,11 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   int edgeRenderingMode = 0;
   float vertexSize = 1.0;
   float edgeThickness = 1.0;
-  int projectionType = 0;
+  int projectionType = 1;
 
-  glm::mat4 modelMatrix;
-  glm::mat4 viewMatrix;
-  glm::mat4 projectionMatrix;
+  QMatrix4x4 modelMatrix;
+  QMatrix4x4 viewMatrix;
+  QMatrix4x4 projectionMatrix;
 
   QColor vertexColor = QColor(255, 255, 255, 255);
   QColor edgeColor = QColor(255, 255, 255, 255);

@@ -27,10 +27,6 @@ void MyGLWidget::initializeGL() {
   int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
   if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
-  modelMatrix = glm::mat4(1.0f);  
-  viewMatrix = glm::mat4(1.0f);
-  viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -2.5f));
-
   std::string vertexShaderCode = ReadShaderFromFile(
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
   std::string fragmentShaderCode = ReadShaderFromFile(
@@ -81,18 +77,21 @@ void MyGLWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   shaderProgram.bind();
 
-  double width = 570;
-  double height = 450;
+  int width = 570;
+  int height = 450;
+  aspectRatio = static_cast<float>(width) / (height);
+  glViewport(0, 0, width, height);
+  projectionMatrix.setToIdentity();
   if (projectionType == 0) {
-    projectionMatrix = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
-
-  } /*else {
-      projectionMatrix = glm::perspective(glm::radians(45.0), (float)width /
-  (float)height, 0.1f, 100.0f);
-  }*/
+    projectionMatrix.ortho(0.0f, (float)width, 0.0f, (float)height, 0.1f, 1.0f);
+  } else {
+      projectionMatrix.perspective(60.0f, aspectRatio, 0.1f, 100.0f);
+  }
 
   glUseProgram(shaderProgram);
-
+  modelMatrix.setToIdentity();
+  viewMatrix.setToIdentity();
+  viewMatrix.translate(0.0f, 0.0f, -2.5f);
   shaderProgram.setUniformValue("modelMatrix", modelMatrix);
   shaderProgram.setUniformValue("viewMatrix", viewMatrix);
   shaderProgram.setUniformValue("projectionMatrix", projectionMatrix);
