@@ -37,7 +37,6 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   int projectionType = 0;
 
   glm::mat4 modelMatrix;
-  glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
 
   QColor vertexColor = QColor(255, 255, 255, 255);

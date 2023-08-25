@@ -31,8 +31,6 @@ void MyGLWidget::initializeGL() {
   if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
   modelMatrix = glm::mat4(1.0f);
-  viewMatrix = glm::mat4(1.0f);
-  viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
   std::string vertexShaderCode = ReadShaderFromFile(
       "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
@@ -131,8 +129,6 @@ void MyGLWidget::paintGL() {
       glGetUniformLocation(shaderProgram, "projecionMatrix");
   glUniformMatrix4fv(projectionMatrixLoc, 1, GL_FALSE,
                      glm::value_ptr(projectionMatrix));
-  GLint viewMatrixLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
-  glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
   /*GLint vertexRenderingModeLoc =
       glGetUniformLocation(shaderProgram, "vertexRenderingMode");
