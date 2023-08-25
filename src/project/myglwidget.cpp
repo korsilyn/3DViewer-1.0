@@ -35,12 +35,11 @@ void MyGLWidget::initializeGL() {
   const char *fragmentShaderSource = fragmentShaderCode.c_str();
 
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-  printf("%s", shaderProgram.log());
+  printf("%s", shaderProgram.log().toStdString().c_str());
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-  printf("%s", shaderProgram.log());
-
+  printf("%s", shaderProgram.log().toStdString().c_str());
   shaderProgram.link();
-  printf("%s", shaderProgram.log());
+  printf("%s", shaderProgram.log().toStdString().c_str());
   shaderProgram.bind();
 
   glGenBuffers(1, &VBO); 
@@ -56,7 +55,7 @@ void MyGLWidget::initializeGL() {
   GLuint positionLoc = shaderProgram.attributeLocation("position");
   glEnableVertexAttribArray(positionLoc);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glVertexAttribPoinder(positionLoc, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+  glVertexAttribPointer(positionLoc, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
   glEnable(GL_DEPTH_TEST);
   shaderProgram.release();
@@ -79,7 +78,7 @@ void MyGLWidget::paintGL() {
 
   int width = 570;
   int height = 450;
-  aspectRatio = static_cast<float>(width) / (height);
+  float aspectRatio = static_cast<float>(width) / (height);
   glViewport(0, 0, width, height);
   projectionMatrix.setToIdentity();
   if (projectionType == 0) {

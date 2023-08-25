@@ -70,7 +70,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
 
   // OpenGL shaders
   GLuint VBO, EBO;
-  QOpenGlShaderProgram shaderProgram;
+  QOpenGLShaderProgram shaderProgram;
 };
 
 #endif  // MYGLWIDGET_H
