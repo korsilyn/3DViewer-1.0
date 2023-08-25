@@ -62,13 +62,9 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   std::string filePath;
 
  private:
-  std::string ReadShaderFromFile(const char *file);
-
   // OpenGL shaders
-  GLuint VAO, VBO, EBO;
-  GLuint shaderProgram;
-  GLuint vertexShader;
-  GLuint fragmentShader;
+  GLuint IBO, VBO, EBO;
+  QOpenGlShaderProgram shaderProgram;
 };
 
 #endif  // MYGLWIDGET_H

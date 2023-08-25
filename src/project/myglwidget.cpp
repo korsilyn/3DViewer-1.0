@@ -14,7 +14,6 @@ MyGLWidget::~MyGLWidget() {
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
-  glDeleteProgram(shaderProgram);
 }
 
 void MyGLWidget::initializeGL() {
@@ -158,19 +157,6 @@ void MyGLWidget::paintGL() {
 //  printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
 //  ///////
   //glUseProgram(0);
-}
-
-std::string MyGLWidget::ReadShaderFromFile(const char *file) {
-  std::string shaderCode;
-  std::ifstream shaderFile(file);
-  if (shaderFile.is_open()) {
-    std::stringstream shaderStream;
-    shaderStream << shaderFile.rdbuf();
-    shaderCode = shaderStream.str();
-    shaderFile.close();
-  } else
-    std::cerr << "Unable to open file!" << std::endl;
-  return shaderCode;
 }
 
 void MyGLWidget::doTheThing() {
