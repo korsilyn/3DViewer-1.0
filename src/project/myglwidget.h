@@ -31,6 +31,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   int edgeRenderingMode = 0;
   float vertexSize = 1.0;
   float edgeThickness = 1.0;
+  int projectionChanged = 0;
   int projectionType = 1;
 
   QColor vertexColor = QColor(255, 255, 255, 255);
@@ -67,13 +68,15 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     "layout(location = 0) in vec4 position;\n"
     "uniform mat4 MVPMatrix;\n"
     "void main() {\n"
-      "gl_Position = MVPMatrix * position;\n"
+    "  gl_Position = MVPMatrix * position;\n"
     "}\n";
 
   const char *fragmentSourceCode = "#version 330 core\n"
     "uniform vec4 color;\n"
     "out vec4 FragColor;\n"
-    "void main() { FragColor = color; }\n";
+    "void main() {\n"
+    "  FragColor = color;\n"
+    "}\n";
 };
 
 #endif  // MYGLWIDGET_H

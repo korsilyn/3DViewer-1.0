@@ -62,7 +62,7 @@ void MyGLWidget::resizeGL(int w, int h) {
   glViewport(0, 0, w, h);
   projectionMatrix.setToIdentity();
   if (projectionType == 0) {
-      projectionMatrix.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f); // костыль
+      projectionMatrix.ortho(-w/150.0f, w/150.0f, -h/150.0f, h/150.0f, 0.1f, 100.0f);
   } else {
       projectionMatrix.perspective(60.0f, aspectRatio, 0.1f, 100.0f);
   }
@@ -74,20 +74,27 @@ void MyGLWidget::paintGL() {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //resizeGL(MyGLWidget::width(), MyGLWidget::height());
-
+  if (projectionChanged) {
+      resizeGL(MyGLWidget::width(), MyGLWidget::height());
+      projectionChanged = !projectionChanged;
+  }
 
   modelMatrix.setToIdentity();
-  modelMatrix.translate(0.0f, 0.0f, -2.75f);
-  modelMatrix.rotate(45.0f, 1.0f, 0.0f, 0.0f);
-  modelMatrix.rotate(45.0f, 0.0f, 1.0f, 0.0f);
-  shaderProgram.setUniformValue("MVPMatrix", projectionMatrix * modelMatrix);
-  //shaderProgram.setUniformValue("projectionMatrix", projectionMatrix);
-  shaderProgram.setUniformValue("color", edgeColor);
+  modelMatrix.translate(x_shift, y_shift, -3.0f + z_shift);
+  modelMatrix.rotate(ox_rotate, 1.0f, 0.0f, 0.0f);
+  modelMatrix.rotate(oy_rotate, 0.0f, 1.0f, 0.0f);
+  modelMatrix.rotate(oz_rotate, 0.0f, 0.0f, 1.0f);
+  modelMatrix.scale(scale);
+
   shaderProgram.bind();
   glBindVertexArray(VAO);
-
-  if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count * 4);
+  shaderProgram.setUniformValue("MVPMatrix", projectionMatrix * modelMatrix);
+  if (vertexRenderingMode) {
+      shaderProgram.setUniformValue("color", vertexColor);
+      glPointSize(vertexSize);
+      glDrawArrays(GL_POINTS, 0, data.vertex_count * 4);
+  }
+  shaderProgram.setUniformValue("color", edgeColor);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
 
 //  ///////////

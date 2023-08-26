@@ -33,6 +33,7 @@ void MainWindow::send_params() {
     view->edgeRenderingMode = line_type;
     view->vertexSize = points_size;
     view->edgeThickness = line_width;
+    if (view->projectionType != projection_type) view->projectionChanged = 1; //tmp
     view->projectionType = projection_type;
 
     view->vertexColor = vertex_color;
@@ -65,6 +66,7 @@ void MainWindow::on_but_openFile_clicked() {
 
 void MainWindow::on_but_build_clicked() {
   if (file_opened) {
+    send_params();
     view->update();
   }
 }
@@ -88,7 +90,7 @@ void MainWindow::on_slider_oz_sliderMoved(int position) {
 }
 
 void MainWindow::on_scale_slider_sliderMoved(int position) {
-  scale = pow(2, position - 10);  // 2^-9 -- 2^10
+  scale = pow(1.2, position - 10);  // 2^-9 -- 2^10
 }
 
 void MainWindow::on_Color_button_clicked() {
