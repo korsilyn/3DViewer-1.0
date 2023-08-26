@@ -11,7 +11,7 @@
 
 typedef struct data {
   size_t vertex_count;
-  double *vertex_array;
+  float *vertex_array;
   size_t vertex_indices_count;
   int *vertex_indices_array;
 } obj_data;

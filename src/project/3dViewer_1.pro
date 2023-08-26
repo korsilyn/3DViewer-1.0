@@ -7,10 +7,6 @@ QT += opengl
 
 CONFIG += c++17
 
-
-
-
-INCLUDEPATH += "../glm"
 INCLUDEPATH += "../helpers"
 
 # You can make your code fail to compile if it uses deprecated APIs.

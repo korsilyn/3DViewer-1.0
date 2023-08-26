@@ -65,7 +65,7 @@ void MainWindow::on_but_openFile_clicked() {
 
 void MainWindow::on_but_build_clicked() {
   if (file_opened) {
-    view->doTheThing();
+    view->update();
   }
 }
 

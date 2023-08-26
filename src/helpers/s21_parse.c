@@ -5,7 +5,7 @@ int s21_malloc_data(obj_data *data) {
 
   if (data->vertex_count)
     data->vertex_array =
-        calloc(data->vertex_count * 4, sizeof(double));  // * 4 bc xyzw dots
+        calloc(data->vertex_count * 4, sizeof(float));  // * 4 bc xyzw dots
 
   if (data->vertex_indices_count)
     data->vertex_indices_array =
@@ -28,7 +28,7 @@ void s21_dealloc_data(obj_data *data) {
   }
 }
 
-int s21_read_obj_file(obj_data *data, char *file) {
+int s21_read_obj_file(obj_data *data, const char *file) {
   if (!data || !file) return ERROR;
   int status = OK;
   FILE *fp = fopen(file, "r");

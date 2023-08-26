@@ -9,9 +9,12 @@ MyGLWidget::~MyGLWidget() {
   s21_dealloc_data(&data);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
 
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
+  glDeleteVertexArrays(1, &VAO);
+  shaderProgram.removeAllShaders();
 }
 
 void MyGLWidget::initializeGL() {
@@ -21,120 +24,74 @@ void MyGLWidget::initializeGL() {
 
 //  printf("%p %p %p\n", &VAO, &VBO, &EBO);
 
-
   std::string obj_fullname =
-      "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cube.obj";
-  int success = s21_read_obj_file(&data, (char *)obj_fullname.c_str());
+      "/home/sellisshe/C8_3DViewer_v1.0-2/src/cube.obj";
+  int success = s21_read_obj_file(&data, obj_fullname.c_str());
   if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
-  std::string vertexShaderCode = ReadShaderFromFile(
-      "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/vertex.glsl");
-  std::string fragmentShaderCode = ReadShaderFromFile(
-      "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/shaders/fragment.glsl");
-  const char *vertexShaderSource = vertexShaderCode.c_str();
-  const char *fragmentShaderSource = fragmentShaderCode.c_str();
-
-  shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+  shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexSourceCode);
   printf("%s", shaderProgram.log().toStdString().c_str());
-  shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+  shaderProgram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentSourceCode);
   printf("%s", shaderProgram.log().toStdString().c_str());
   shaderProgram.link();
   printf("%s", shaderProgram.log().toStdString().c_str());
-  shaderProgram.bind();
-
-  glGenBuffers(1, &VBO); 
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * data.vertex_count,
-               data.vertex_array, GL_STATIC_DRAW);
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
+  glBindVertexArray(VAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * data.vertex_count,
+               data.vertex_array, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-               sizeof(GLuint) * 2 * data.vertex_indices_count,
+               sizeof(unsigned int) * 2 * data.vertex_indices_count,
                data.vertex_indices_array, GL_STATIC_DRAW);
 
-  GLuint positionLoc = shaderProgram.attributeLocation("position");
-  glEnableVertexAttribArray(positionLoc);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glVertexAttribPointer(positionLoc, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  shaderProgram.bind();
   glEnable(GL_DEPTH_TEST);
   shaderProgram.release();
 }
 
 void MyGLWidget::resizeGL(int w, int h) {
-  // Update projection matrix and other size related settings:
-  //        m_projection.setToIdentity();
-  //        m_projection.perspective(45.0f, w / float(h), 0.01f, 100.0f);
-  //        ...
-  w;
-  h;
+  printf("resizeGL called\n");
+  float aspectRatio = static_cast<float>(w) / (h);
+  glViewport(0, 0, w, h);
+  projectionMatrix.setToIdentity();
+  if (projectionType == 0) {
+      projectionMatrix.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f); // костыль
+  } else {
+      projectionMatrix.perspective(60.0f, aspectRatio, 0.1f, 100.0f);
+  }
 }
 
 void MyGLWidget::paintGL() {
   printf("paintGL called\n");
 
+  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  shaderProgram.bind();
 
-  int width = 570;
-  int height = 450;
-  float aspectRatio = static_cast<float>(width) / (height);
-  glViewport(0, 0, width, height);
-  projectionMatrix.setToIdentity();
-  if (projectionType == 0) {
-    projectionMatrix.ortho(0.0f, (float)width, 0.0f, (float)height, 0.1f, 1.0f);
-  } else {
-      projectionMatrix.perspective(60.0f, aspectRatio, 0.1f, 100.0f);
-  }
+  //resizeGL(MyGLWidget::width(), MyGLWidget::height());
 
-  glUseProgram(shaderProgram);
+
   modelMatrix.setToIdentity();
-  viewMatrix.setToIdentity();
-  viewMatrix.translate(0.0f, 0.0f, -2.5f);
-  shaderProgram.setUniformValue("modelMatrix", modelMatrix);
-  shaderProgram.setUniformValue("viewMatrix", viewMatrix);
-  shaderProgram.setUniformValue("projectionMatrix", projectionMatrix);
+  modelMatrix.translate(0.0f, 0.0f, -2.75f);
+  modelMatrix.rotate(45.0f, 1.0f, 0.0f, 0.0f);
+  modelMatrix.rotate(45.0f, 0.0f, 1.0f, 0.0f);
+  shaderProgram.setUniformValue("MVPMatrix", projectionMatrix * modelMatrix);
+  //shaderProgram.setUniformValue("projectionMatrix", projectionMatrix);
   shaderProgram.setUniformValue("color", edgeColor);
+  shaderProgram.bind();
+  glBindVertexArray(VAO);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-  if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count);
+  if (vertexRenderingMode) glDrawArrays(GL_POINTS, 0, data.vertex_count * 4);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
-
 
 //  ///////////
 //  printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
 //  printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
 //  ///////
-  shaderProgram.release();
 }
-
-void MyGLWidget::doTheThing() {
-  printf("doTheThing called\n");
-  this->paintGL();
-}
-
-std::string MyGLWidget::ReadShaderFromFile(const char *file) {
-  std::string shaderCode;
-  std::ifstream shaderFile(file);
-  if (shaderFile.is_open()) {
-    std::stringstream shaderStream;
-    shaderStream << shaderFile.rdbuf();
-    shaderCode = shaderStream.str();
-    shaderFile.close();
-  } else
-    std::cerr << "Unable to open file!" << std::endl;
-  return shaderCode;
-}
-
-/*
- * rotate:
- * glm::vec3 rotationaxis = glm::vec3(x, y, z);
- * modelmatrix = glm::rotate(modelmatrix, glm::radians(angle), rotationaxis);
- * move:
- * glm::vec3 moveaxis = glm::vec3(x, y, z);
- * modelmatrix = glm::translate(modelmatrix, moveaxis);
- * scale:
- * glm:vec3 scaleaxix = glm::vec3(scale, scale, scale);
- * modelmatrix = glm::scale(modelmatrix, scaleaxis);
- */

@@ -1,11 +1,11 @@
 #ifndef MYGLWIDGET_H
 #define MYGLWIDGET_H
 
-#include <gl.h>
-#include <glu.h>
+//#include <gl.h>
+//#include <glu.h>
 
 #include <QOpenGLContext>
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QWidget>
@@ -13,20 +13,14 @@
 #include <QtOpenGLWidgets>
 #include <QMatrix4x4>
 // #include <glew.h>
-#include <fstream>
 #include <iostream>
-#include <sstream>
-
-#include "../glm/glm.hpp"
-#include "../glm/gtc/matrix_transform.hpp"
-#include "../glm/gtc/type_ptr.hpp"
 
 extern "C" {
 //    #include "../helpers/s21_3dviewer.h"
 #include "../helpers/s21_parse.h"
 }
 
-class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
+class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
  public:
   explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
   ~MyGLWidget() override;
@@ -39,17 +33,8 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   float edgeThickness = 1.0;
   int projectionType = 1;
 
-  QMatrix4x4 modelMatrix;
-  QMatrix4x4 viewMatrix;
-  QMatrix4x4 projectionMatrix;
-
   QColor vertexColor = QColor(255, 255, 255, 255);
   QColor edgeColor = QColor(255, 255, 255, 255);
-
-  void initializeGL() override;
-  void resizeGL(int w, int h) override;
-  void paintGL() override;
-  void doTheThing();
 
   double scale = 1;
   double x_shift = 0;
@@ -65,12 +50,30 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
   QString fileFullName;
   std::string filePath;
 
+  protected:
+  void initializeGL() override;
+  void resizeGL(int w, int h) override;
+  void paintGL() override;
+
  private:
-  std::string ReadShaderFromFile(const char *file);
+  QMatrix4x4 modelMatrix;
+  QMatrix4x4 projectionMatrix;
 
   // OpenGL shaders
-  GLuint VBO, EBO;
+  GLuint VAO, VBO, EBO;
   QOpenGLShaderProgram shaderProgram;
+
+  const char *vertexSourceCode = "#version 330 core\n"
+    "layout(location = 0) in vec4 position;\n"
+    "uniform mat4 MVPMatrix;\n"
+    "void main() {\n"
+      "gl_Position = MVPMatrix * position;\n"
+    "}\n";
+
+  const char *fragmentSourceCode = "#version 330 core\n"
+    "uniform vec4 color;\n"
+    "out vec4 FragColor;\n"
+    "void main() { FragColor = color; }\n";
 };
 
 #endif  // MYGLWIDGET_H
