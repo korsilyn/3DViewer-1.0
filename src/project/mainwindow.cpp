@@ -12,6 +12,12 @@ MainWindow::MainWindow(QWidget *parent)
   load_settings();
   //    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
   //    delete view;
+  QString a = QDir::currentPath().mid(0, QDir::currentPath().lastIndexOf('/') - 1).toStdString().c_str();
+  a = a.mid(0, a.lastIndexOf('/') - 1);
+  a = a.mid(0, a.lastIndexOf('/') - 1);
+  a = a.mid(0, a.lastIndexOf('/'));
+  a = a+"/objects/cat.obj";
+  view->fileFullName = a;
 }
 
 MainWindow::~MainWindow() {
@@ -38,10 +44,17 @@ void MainWindow::send_params() {
 
     view->vertexColor = vertex_color;
     view->edgeColor = line_color;
+    view->backColor = back_color;
 }
 
 void MainWindow::on_but_openFile_clicked() {
-  fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), "~/",
+
+  QString a = QDir::currentPath().mid(0, QDir::currentPath().lastIndexOf('/') - 1).toStdString().c_str();
+  a = a.mid(0, a.lastIndexOf('/') - 1);
+  a = a.mid(0, a.lastIndexOf('/') - 1);
+  a = a.mid(0, a.lastIndexOf('/'));
+
+  fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), a,
                                           tr("Obj Files (*.obj)"));
   if (fullname.mid(fullname.lastIndexOf('.') + 1) == "obj") {
     ui->label->setText("filename = " +
@@ -52,12 +65,17 @@ void MainWindow::on_but_openFile_clicked() {
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
     view->filePath =
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
-    //            printf("%s\n", QString(view->filePath);
-    //            qDebug() << fullname;
-    //            num_of_vertexes =
-    //            num_of_edges =
+
+
+
+
     ui->polygons_label->setText(QString::number(num_of_edges));
     ui->vertexes_label->setText(QString::number(num_of_vertexes));
+
+
+    printf("%s\n", view->fileFullName.toStdString().c_str());
+//    view->initializeGL(); // КОСТЫЛЬ!!!
+
   } else {
     ui->label->setText("Wrong file");
     file_opened = 0;
@@ -65,40 +83,59 @@ void MainWindow::on_but_openFile_clicked() {
 }
 
 void MainWindow::on_but_build_clicked() {
-  if (file_opened) {
     send_params();
+//    view->afterOpenObj();
     view->update();
-  }
+
 }
 
-void MainWindow::on_spin_x_valueChanged(double arg1) { x_shift = arg1; }
+void MainWindow::on_spin_x_valueChanged(double arg1) {
+  x_shift = arg1;
+  send_params();
+  view->update();
+}
 
-void MainWindow::on_spin_y_valueChanged(double arg1) { y_shift = arg1; }
+void MainWindow::on_spin_y_valueChanged(double arg1) {
+    y_shift = arg1;
+    send_params();
+    view->update();
+}
 
-void MainWindow::on_spin_z_valueChanged(double arg1) { z_shift = arg1; }
+void MainWindow::on_spin_z_valueChanged(double arg1) {
+    z_shift = arg1;
+    send_params();
+    view->update();
+}
 
 void MainWindow::on_slider_ox_sliderMoved(int position) {
-  ox_rotate = position;
+  ox_rotate = position/6.283;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_slider_oy_sliderMoved(int position) {
-  oy_rotate = position;
+  oy_rotate = position/6.283;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_slider_oz_sliderMoved(int position) {
-  oz_rotate = position;
+  oz_rotate = position/6.283;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_scale_slider_sliderMoved(int position) {
-  scale = pow(1.2, position - 10);  // 2^-9 -- 2^10
+  scale = pow(1.2, position - 10);  // 1.2^-9 -- 1.2^10
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_Color_button_clicked() {
   back_color = QColorDialog::getColor();
-  // #ifdef QT_DEBUG
-  //     QString style = "background: rgb(%1, %2, %3);";
-  //     this->ui->label->setStyleSheet(style.arg(back_color.red()).arg(back_color.green()).arg(back_color.blue()));
-  // #endif
+  view->backColor = back_color;
+//  view->afterOpenObj();
+  view->update();
 }
 
 //////////////settings
@@ -114,6 +151,7 @@ void MainWindow::save_setting() {
 
   settings->setValue("back_color", back_color);
   settings->setValue("line_color", line_color);
+  settings->setValue("vertex_color", vertex_color);
 
   settings->setValue("fullname", fullname);
 }
@@ -128,6 +166,7 @@ void MainWindow::load_settings() {
 
   back_color = settings->value("back_color").value<QColor>();
   line_color = settings->value("line_color").value<QColor>();
+  vertex_color = settings->value("vertex_color").value<QColor>();
 
   fullname = settings->value("fullname").toString();
 
@@ -179,12 +218,12 @@ void MainWindow::load_settings() {
   ui->line_width_spinbox->setValue(line_width);
   ui->points_size_spinbox->setValue(points_size);
 
-  ui->label->setText("filename = " +
-                     fullname.mid(fullname.lastIndexOf('/') + 1));
-  file_opened = 1;
-  view->fileFullName = fullname;
-  //    num_of_vertexes = view->data.vertex_count;
-  //    num_of_edges = view->data.vertex_indices_count;
+//  ui->label->setText("filename = " +
+//                     fullname.mid(fullname.lastIndexOf('/') + 1));
+//  file_opened = 1;
+//  view->fileFullName = fullname;
+  num_of_vertexes = view->data.vertex_count;
+  num_of_edges = view->data.vertex_indices_count;
   ui->polygons_label->setText(QString::number(num_of_edges));
   ui->vertexes_label->setText(QString::number(num_of_vertexes));
 }
@@ -195,48 +234,76 @@ void MainWindow::on_parallel_projection_rb_clicked() {
   ui->central_projection_rb->setChecked(false);
   ui->parallel_projection_rb->setChecked(true);
   projection_type = 0;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_central_projection_rb_clicked() {
   ui->parallel_projection_rb->setChecked(false);
   ui->central_projection_rb->setChecked(true);
   projection_type = 1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_solid_line_rb_clicked() {
   ui->dotted_line_rb->setChecked(false);
   ui->solid_line_rb->setChecked(true);
   line_type = 0;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_dotted_line_rb_clicked() {
   ui->dotted_line_rb->setChecked(true);
   ui->solid_line_rb->setChecked(false);
   line_type = 1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_Color_button_2_clicked() {
   line_color = QColorDialog::getColor();
   view->edgeColor = line_color;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_Color_button_3_clicked() {
   vertex_color = QColorDialog::getColor();
   view->vertexColor = vertex_color;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_points_size_spinbox_valueChanged(int arg1) {
   points_size = arg1;
+  send_params();
+  view->update();
 }
 
-void MainWindow::on_absent_point_rb_clicked() { points_type = 0; }
+void MainWindow::on_absent_point_rb_clicked() {
+    points_type = 0;
+    send_params();
+    view->update();
+}
 
-void MainWindow::on_sphere_point_rb_clicked() { points_type = 2; }
+void MainWindow::on_sphere_point_rb_clicked() {
+    points_type = 2;
+    send_params();
+    view->update();
+}
 
-void MainWindow::on_box_point_rb_clicked() { points_type = 1; }
+void MainWindow::on_box_point_rb_clicked() {
+    points_type = 1;
+    send_params();
+    view->update();
+}
 
 void MainWindow::on_line_width_spinbox_valueChanged(int arg1) {
   line_width = arg1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_but_reset_clicked() {
@@ -266,6 +333,9 @@ void MainWindow::on_but_reset_clicked() {
   points_type = 2;
   line_width = 1;
   points_size = 1;
+  send_params();
+  view->update();
+
 }
 
 // void MainWindow::wheelEvent(QWheelEvent * event)

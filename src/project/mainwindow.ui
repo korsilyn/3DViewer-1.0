@@ -65,6 +65,12 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="minimum">
+     <double>-100.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
    </widget>
    <widget class="QSlider" name="scale_slider">
     <property name="geometry">
@@ -121,6 +127,12 @@
       <width>80</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <double>-100.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
     </property>
    </widget>
    <widget class="QSlider" name="slider_oz">
@@ -185,6 +197,12 @@
       <width>80</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <double>-100.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
     </property>
    </widget>
    <widget class="QPushButton" name="Color_button">

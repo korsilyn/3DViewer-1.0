@@ -36,6 +36,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
 
   QColor vertexColor = QColor(255, 255, 255, 255);
   QColor edgeColor = QColor(255, 255, 255, 255);
+  QColor backColor = QColor(100, 100, 100, 100);
 
   double scale = 1;
   double x_shift = 0;
@@ -45,18 +46,25 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   double oy_rotate = 0;
   double ox_rotate = 0;
 
+
   unsigned int num_of_vertexes = 0;
   unsigned int num_of_edges = 0;
 
   QString fileFullName;
   std::string filePath;
 
-  protected:
+  void afterOpenObj();
+
   void initializeGL() override;
+
+  protected:
+
   void resizeGL(int w, int h) override;
   void paintGL() override;
 
  private:
+  int flag_not_to_paint = 0;
+
   QMatrix4x4 modelMatrix;
   QMatrix4x4 projectionMatrix;
 

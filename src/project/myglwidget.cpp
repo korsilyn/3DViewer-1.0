@@ -18,16 +18,22 @@ MyGLWidget::~MyGLWidget() {
 }
 
 void MyGLWidget::initializeGL() {
-  printf("initializeGL called\n");
 
+  printf("initializeGL called\n");
   initializeOpenGLFunctions();
 
-//  printf("%p %p %p\n", &VAO, &VBO, &EBO);
+//  std::string obj_fullname = fileFullName.toStdString();
 
-  std::string obj_fullname =
-      "/home/sellisshe/C8_3DViewer_v1.0-2/src/cube.obj";
-  int success = s21_read_obj_file(&data, obj_fullname.c_str());
+
+
+//  std::string obj_fullname  = "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cat.obj";
+  printf("--%s\n", fileFullName.toStdString().c_str());
+
+  int success = s21_read_obj_file(&data, fileFullName.toStdString().c_str());
+
+
   if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
+
 
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexSourceCode);
   printf("%s", shaderProgram.log().toStdString().c_str());
@@ -35,6 +41,7 @@ void MyGLWidget::initializeGL() {
   printf("%s", shaderProgram.log().toStdString().c_str());
   shaderProgram.link();
   printf("%s", shaderProgram.log().toStdString().c_str());
+
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
@@ -71,7 +78,7 @@ void MyGLWidget::resizeGL(int w, int h) {
 void MyGLWidget::paintGL() {
   printf("paintGL called\n");
 
-  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  glClearColor(backColor.redF(), backColor.greenF(), backColor.blueF(),backColor.alphaF());
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (projectionChanged) {
