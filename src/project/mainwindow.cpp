@@ -77,12 +77,12 @@ void MainWindow::on_but_openFile_clicked() {
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
     view->filePath =
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
-
-
-
-
-
     printf("%s\n", view->fileFullName.toStdString().c_str());
+    num_of_edges = view->num_of_edges;
+    num_of_vertexes = view->num_of_vertexes;
+    ui->polygons_label->setText(QString::number(num_of_edges));
+    ui->vertexes_label->setText(QString::number(num_of_vertexes));
+
 
   } else {
     ui->label->setText("Wrong file");
@@ -94,13 +94,11 @@ void MainWindow::on_but_build_clicked() {
     send_params();
 //    view->afterOpenObj();
     view->update();
+
     num_of_edges = view->num_of_edges;
     num_of_vertexes = view->num_of_vertexes;
-
-
     ui->polygons_label->setText(QString::number(num_of_edges));
     ui->vertexes_label->setText(QString::number(num_of_vertexes));
-
 
 }
 
@@ -129,13 +127,13 @@ void MainWindow::on_slider_ox_sliderMoved(int position) {
 }
 
 void MainWindow::on_slider_oy_sliderMoved(int position) {
-  oy_rotate = position/6.283;
+  oz_rotate = position/6.283;
   send_params();
   view->update();
 }
 
 void MainWindow::on_slider_oz_sliderMoved(int position) {
-  oz_rotate = position/6.283;
+  oy_rotate = position/6.283; //tut kostil
   send_params();
   view->update();
 }
