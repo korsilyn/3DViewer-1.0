@@ -78,6 +78,7 @@ void MainWindow::on_but_openFile_clicked() {
     view->filePath =
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
     printf("%s\n", view->fileFullName.toStdString().c_str());
+
     num_of_edges = view->num_of_edges;
     num_of_vertexes = view->num_of_vertexes;
     ui->polygons_label->setText(QString::number(num_of_edges));
