@@ -56,10 +56,22 @@ void MainWindow::on_but_openFile_clicked() {
 
   fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), a,
                                           tr("Obj Files (*.obj)"));
+
+  view->update();
+  view->update();
   if (fullname.mid(fullname.lastIndexOf('.') + 1) == "obj") {
     ui->label->setText("filename = " +
                        fullname.mid(fullname.lastIndexOf('/') + 1));
     file_opened = 1;
+
+    if (view) {
+        ui->Layout_for_glwidget->removeWidget(view);
+        delete view;
+    }
+    view = new MyGLWidget(this, fullname);
+
+    ui->Layout_for_glwidget->addWidget(view, 0);
+
     view->fileFullName = fullname;
     view->filePath =
         QString(fullname.mid(0, fullname.lastIndexOf('/') - 1)).toStdString();
@@ -69,12 +81,8 @@ void MainWindow::on_but_openFile_clicked() {
 
 
 
-    ui->polygons_label->setText(QString::number(num_of_edges));
-    ui->vertexes_label->setText(QString::number(num_of_vertexes));
-
 
     printf("%s\n", view->fileFullName.toStdString().c_str());
-//    view->initializeGL(); // КОСТЫЛЬ!!!
 
   } else {
     ui->label->setText("Wrong file");
@@ -86,6 +94,13 @@ void MainWindow::on_but_build_clicked() {
     send_params();
 //    view->afterOpenObj();
     view->update();
+    num_of_edges = view->num_of_edges;
+    num_of_vertexes = view->num_of_vertexes;
+
+
+    ui->polygons_label->setText(QString::number(num_of_edges));
+    ui->vertexes_label->setText(QString::number(num_of_vertexes));
+
 
 }
 

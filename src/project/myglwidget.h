@@ -22,7 +22,7 @@ extern "C" {
 
 class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
  public:
-  explicit MyGLWidget(QWidget *parent = Q_NULLPTR);
+  explicit MyGLWidget(QWidget *parent = Q_NULLPTR, QString filename = "");
   ~MyGLWidget() override;
 
   obj_data data = {0, NULL, 0, NULL};

@@ -1,7 +1,10 @@
 #include "myglwidget.h"
 
-MyGLWidget::MyGLWidget(QWidget *parent) : QOpenGLWidget{parent} {
+MyGLWidget::MyGLWidget(QWidget *parent, QString filename) : QOpenGLWidget{parent} {
   printf("constructor called\n");
+  fileFullName = filename;
+  this->update();
+  this->update();
 }
 
 MyGLWidget::~MyGLWidget() {
@@ -61,6 +64,9 @@ void MyGLWidget::initializeGL() {
   shaderProgram.bind();
   glEnable(GL_DEPTH_TEST);
   shaderProgram.release();
+
+  num_of_vertexes = data.vertex_count;
+  num_of_edges = data.vertex_indices_count;
 }
 
 void MyGLWidget::resizeGL(int w, int h) {
@@ -76,7 +82,7 @@ void MyGLWidget::resizeGL(int w, int h) {
 }
 
 void MyGLWidget::paintGL() {
-  printf("paintGL called\n");
+//  printf("paintGL called\n");
 
   glClearColor(backColor.redF(), backColor.greenF(), backColor.blueF(),backColor.alphaF());
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
