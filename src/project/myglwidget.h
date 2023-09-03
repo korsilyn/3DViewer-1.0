@@ -56,9 +56,8 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   void afterOpenObj();
 
   void initializeGL() override;
-
   protected:
-
+  int succsess_reading = 0;
   void resizeGL(int w, int h) override;
   void paintGL() override;
 

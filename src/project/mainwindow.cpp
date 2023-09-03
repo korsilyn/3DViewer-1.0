@@ -50,9 +50,11 @@ void MainWindow::send_params() {
 void MainWindow::on_but_openFile_clicked() {
 
   QString a = QDir::currentPath().mid(0, QDir::currentPath().lastIndexOf('/') - 1).toStdString().c_str();
+  ui->label->setText(a);
   a = a.mid(0, a.lastIndexOf('/') - 1);
-  a = a.mid(0, a.lastIndexOf('/') - 1);
+  ui->label_10->setText(a);
   a = a.mid(0, a.lastIndexOf('/'));
+  ui->label_11->setText(a);
 
   fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), a,
                                           tr("Obj Files (*.obj)"));

@@ -5,6 +5,9 @@ MyGLWidget::MyGLWidget(QWidget *parent, QString filename) : QOpenGLWidget{parent
   fileFullName = filename;
   this->update();
   this->update();
+  succsess_reading = s21_read_obj_file(&data, fileFullName.toStdString().c_str());
+  num_of_vertexes = data.vertex_count;
+  num_of_edges = data.vertex_indices_count;
 }
 
 MyGLWidget::~MyGLWidget() {
@@ -32,10 +35,10 @@ void MyGLWidget::initializeGL() {
 //  std::string obj_fullname  = "/Users/sabrahar/Desktop/C8_3DViewer_v1.0-2/src/objects/cat.obj";
   printf("--%s\n", fileFullName.toStdString().c_str());
 
-  int success = s21_read_obj_file(&data, fileFullName.toStdString().c_str());
 
 
-  if (!success) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
+
+  if (!succsess_reading) std::cout << "ERROR::MODEL::LOAD_FAILED\n" << std::endl;
 
 
   shaderProgram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexSourceCode);
@@ -65,8 +68,7 @@ void MyGLWidget::initializeGL() {
   glEnable(GL_DEPTH_TEST);
   shaderProgram.release();
 
-  num_of_vertexes = data.vertex_count;
-  num_of_edges = data.vertex_indices_count;
+  paintGL();
 }
 
 void MyGLWidget::resizeGL(int w, int h) {
