@@ -12,6 +12,7 @@
 #include <QtOpenGL>
 #include <QtOpenGLWidgets>
 #include <QMatrix4x4>
+#include <QWheelEvent>
 // #include <glew.h>
 #include <iostream>
 
@@ -56,6 +57,18 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   void afterOpenObj();
 
   void initializeGL() override;
+
+  ///
+  /// \brief mousePressEvent
+  /// \param event
+  ///
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void wheelEvent(QWheelEvent *event) override;
+  QPoint cur_pos;
+  QPoint new_pos;
+  //
+
   protected:
   int succsess_reading = 0;
   void resizeGL(int w, int h) override;
@@ -83,7 +96,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     "uniform int dashed;\n"
     "out vec4 FragColor;\n"
     "void main() {\n"
-    "  if (dashed) {\n"
+    "  if (dashed == 1) {\n"
     "    float dashSize = 0.3;\n"
     "    float gapSize = 0.3;\n"
     "    float t = mod(gl_FragCoord.x, (dashSize + gapSize)) / (dashSize "

@@ -122,9 +122,35 @@ void MyGLWidget::paintGL() {
   }
   shaderProgram.setUniformValue("color", edgeColor);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
+}
 
-//  ///////////
-//  printf("GL_VERSION = %s\n", glGetString(GL_VERSION));
-//  printf("GL_VENDOR = %s\n", glGetString(GL_VENDOR));
-//  ///////
+
+
+void MyGLWidget::mouseMoveEvent(QMouseEvent *event) {
+  new_pos = QPoint(event->globalPosition().toPoint() - cur_pos);
+
+if (event->buttons() & Qt::RightButton) {
+      ox_rotate+=-new_pos.y()/100;
+      oy_rotate+=new_pos.x()/100;
+  }
+  update();
+}
+
+void MyGLWidget::wheelEvent(QWheelEvent *event) {
+  QPoint YouSpinMeRightRound = event->angleDelta() / 240;
+//  double step = normalize_coef / 10;
+//  double scale_tmp = scale_val;
+//  if ((int)(scale_val + numDegrees.y() * step) > 0) {
+//    scale_val += numDegrees.y() * step;
+//    scale(&this->data, scale_val / scale_tmp);
+//    update();
+//  }
+  scale+=YouSpinMeRightRound.y();
+  if (scale > 0.01 && scale < 100) {
+    update();
+  }
+}
+
+void MyGLWidget::mousePressEvent(QMouseEvent *event) {
+  cur_pos = event->globalPosition().toPoint();
 }
