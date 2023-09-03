@@ -128,7 +128,6 @@ void MyGLWidget::paintGL() {
 
 void MyGLWidget::mouseMoveEvent(QMouseEvent *event) {
   new_pos = QPoint(event->globalPosition().toPoint() - cur_pos);
-
 if (event->buttons() & Qt::RightButton) {
       ox_rotate+=-new_pos.y()/100;
       oy_rotate+=new_pos.x()/100;

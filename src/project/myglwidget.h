@@ -54,7 +54,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   QString fileFullName;
   std::string filePath;
 
-  void afterOpenObj();
+//  void afterOpenObj();
 
   void initializeGL() override;
 
@@ -63,6 +63,10 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   /// \param event
   ///
   void mousePressEvent(QMouseEvent *event) override;
+  ///
+  /// \brief mouseMoveEvent
+  /// \param event
+  ///
   void mouseMoveEvent(QMouseEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
   QPoint cur_pos;

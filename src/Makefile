@@ -48,12 +48,14 @@ uninstall:
 	rm -rf 3dViewer_1.exe
 	rm -rf 3dViewer_1.pro.user
 	rm -rf 3dViewer_1.pro
+	rm -rf html
 
-dvi:
+dvi: doxygen
 	open ../README_RUS.md
+	open ./html/index.html
 
 doxygen:
-	
+	doxygen
 
 clean:
 	rm -rf $(OBJECTS) 3dViewer_1.a test *.gcda *.gcno *.html *.css report/ user_guide/
@@ -61,6 +63,7 @@ clean:
 	rm -rf 3dViewer_1.exe
 	rm -rf 3dViewer_1.app
 	rm -rf 3dViewer_1.exe.pro
+	rm -rf html
 
 dist:
 	cd .. && tar -czf SRC_C8_3dViewer_1.0-0.tgz src

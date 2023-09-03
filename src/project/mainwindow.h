@@ -24,11 +24,20 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
+  ///
+  /// \brief save settings from previous session
+  ///
   void save_setting();
+  ///
+  /// \brief loading settings of current session
+  ///
   void load_settings();
 
+  ///
+  /// \brief sending params from ui to myglwidget
+  ///
   void send_params();
-  void send_changes();
+//  void send_changes();
 
   //    void wheelEvent(QWheelEvent * event);
   //    void mousePressEvent (QMouseEvent * event);
@@ -47,6 +56,9 @@ class MainWindow : public QMainWindow {
   double oy_rotate = 0;
   double ox_rotate = 0;
 
+  ///
+  /// \brief pointer to object of MyGLWidget class
+  ///
   MyGLWidget* view;
   QColor back_color;
   QColor line_color;
