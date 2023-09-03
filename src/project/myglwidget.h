@@ -80,9 +80,18 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
 
   const char *fragmentSourceCode = "#version 330 core\n"
     "uniform vec4 color;\n"
+    "uniform int dashed;\n"
     "out vec4 FragColor;\n"
     "void main() {\n"
-    "  FragColor = color;\n"
+    "  if (dashed) {\n"
+    "    float dashSize = 0.3;\n"
+    "    float gapSize = 0.3;\n"
+    "    float t = mod(gl_FragCoord.x, (dashSize + gapSize)) / (dashSize "
+    "+ gapSize);\n"
+    "    if (t > 0.5) FragColor = color;\n"
+    "    else discard;\n"
+    "  }\n"
+    "  else FragColor = color;\n"
     "}\n";
 };
 

@@ -68,7 +68,7 @@ void MyGLWidget::initializeGL() {
   glEnable(GL_DEPTH_TEST);
   shaderProgram.release();
 
-  paintGL();
+  //paintGL();
 }
 
 void MyGLWidget::resizeGL(int w, int h) {
@@ -104,10 +104,21 @@ void MyGLWidget::paintGL() {
   shaderProgram.bind();
   glBindVertexArray(VAO);
   shaderProgram.setUniformValue("MVPMatrix", projectionMatrix * modelMatrix);
-  if (vertexRenderingMode) {
-      shaderProgram.setUniformValue("color", vertexColor);
-      glPointSize(vertexSize);
+  shaderProgram.setUniformValue("dashed", edgeRenderingMode); // new
+  glPointSize(vertexSize);
+  shaderProgram.setUniformValue("color", vertexColor);
+  glLineWidth(edgeThickness); //new
+  if (vertexRenderingMode == 1) {
       glDrawArrays(GL_POINTS, 0, data.vertex_count * 4);
+  }
+  else if (vertexRenderingMode == 2) { //new
+      glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_POINT_SMOOTH);
+      glDrawArrays(GL_POINTS, 0, data.vertex_count * 4);
+      glDisable(GL_POINT_SMOOTH);
+      glDisable(GL_BLEND);
   }
   shaderProgram.setUniformValue("color", edgeColor);
   glDrawElements(GL_LINES, data.vertex_indices_count * 2, GL_UNSIGNED_INT, 0);
