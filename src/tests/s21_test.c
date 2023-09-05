@@ -1,8 +1,4 @@
 #include "s21_test.h"
-#include "../helpers/s21_3dviewer.h"
-#include "../helpers/s21_parse.h"
-#include "../helpers/s21_transform.h"
-#include <check.h>
 
 START_TEST(test_parser_1) {
   obj_data data = {0, NULL, 0, NULL};
