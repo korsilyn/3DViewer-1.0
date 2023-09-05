@@ -12,11 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
   load_settings();
   //    QWheelEvent* qwheel = new QWheelEvent(QWheelEvent::)
   //    delete view;
-  QString a = QDir::currentPath().mid(0, QDir::currentPath().lastIndexOf('/') - 1).toStdString().c_str();
+  QString a = QDir::currentPath()
+                  .mid(0, QDir::currentPath().lastIndexOf('/') - 1)
+                  .toStdString()
+                  .c_str();
   a = a.mid(0, a.lastIndexOf('/') - 1);
   a = a.mid(0, a.lastIndexOf('/') - 1);
   a = a.mid(0, a.lastIndexOf('/'));
-  a = a+"/objects/cat.obj";
+  a = a + "/objects/cat.obj";
   view->fileFullName = a;
 
   gif_timer = new QTimer(this);
@@ -30,34 +33,37 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::send_params() {
-    view->scale = scale;
-    view->x_shift  = x_shift;
-    view->y_shift  = y_shift;
-    view->z_shift  = z_shift;
-    view->oz_rotate  = oz_rotate;
-    view->oy_rotate  = oy_rotate;
-    view->ox_rotate  = ox_rotate;
+  view->scale = scale;
+  view->x_shift = x_shift;
+  view->y_shift = y_shift;
+  view->z_shift = z_shift;
+  view->oz_rotate = oz_rotate;
+  view->oy_rotate = oy_rotate;
+  view->ox_rotate = ox_rotate;
 
-    view->vertexRenderingMode = points_type;
-    view->edgeRenderingMode = line_type;
-    view->vertexSize = points_size;
-    view->edgeThickness = line_width;
-    if (view->projectionType != projection_type) view->projectionChanged = 1; //tmp
-    view->projectionType = projection_type;
+  view->vertexRenderingMode = points_type;
+  view->edgeRenderingMode = line_type;
+  view->vertexSize = points_size;
+  view->edgeThickness = line_width;
+  if (view->projectionType != projection_type)
+    view->projectionChanged = 1;  // tmp
+  view->projectionType = projection_type;
 
-    view->vertexColor = vertex_color;
-    view->edgeColor = line_color;
-    view->backColor = back_color;
+  view->vertexColor = vertex_color;
+  view->edgeColor = line_color;
+  view->backColor = back_color;
 }
 
 void MainWindow::on_but_openFile_clicked() {
-
-  QString a = QDir::currentPath().mid(0, QDir::currentPath().lastIndexOf('/') - 1).toStdString().c_str();
-//  ui->label->setText(a);
-//  a = a.mid(0, a.lastIndexOf('/') - 1);
-//  ui->label_10->setText(a);
-//  a = a.mid(0, a.lastIndexOf('/'));
-//  ui->label_11->setText(a);
+  QString a = QDir::currentPath()
+                  .mid(0, QDir::currentPath().lastIndexOf('/') - 1)
+                  .toStdString()
+                  .c_str();
+  //  ui->label->setText(a);
+  //  a = a.mid(0, a.lastIndexOf('/') - 1);
+  //  ui->label_10->setText(a);
+  //  a = a.mid(0, a.lastIndexOf('/'));
+  //  ui->label_11->setText(a);
 
   fullname = QFileDialog::getOpenFileName(this, tr("Open .obj file:"), a,
                                           tr("Obj Files (*.obj)"));
@@ -70,8 +76,8 @@ void MainWindow::on_but_openFile_clicked() {
     file_opened = 1;
 
     if (view) {
-        ui->Layout_for_glwidget->removeWidget(view);
-        delete view;
+      ui->Layout_for_glwidget->removeWidget(view);
+      delete view;
     }
     view = new MyGLWidget(this, fullname);
 
@@ -89,7 +95,6 @@ void MainWindow::on_but_openFile_clicked() {
     ui->polygons_label->setText(QString::number(num_of_edges));
     ui->vertexes_label->setText(QString::number(num_of_vertexes));
 
-
   } else {
     ui->label->setText("Wrong file");
     file_opened = 0;
@@ -97,15 +102,14 @@ void MainWindow::on_but_openFile_clicked() {
 }
 
 void MainWindow::on_but_build_clicked() {
-    send_params();
-//    view->afterOpenObj();
-    view->update();
+  send_params();
+  //    view->afterOpenObj();
+  view->update();
 
-    num_of_edges = view->num_of_edges;
-    num_of_vertexes = view->num_of_vertexes;
-    ui->polygons_label->setText(QString::number(num_of_edges));
-    ui->vertexes_label->setText(QString::number(num_of_vertexes));
-
+  num_of_edges = view->num_of_edges;
+  num_of_vertexes = view->num_of_vertexes;
+  ui->polygons_label->setText(QString::number(num_of_edges));
+  ui->vertexes_label->setText(QString::number(num_of_vertexes));
 }
 
 void MainWindow::on_spin_x_valueChanged(double arg1) {
@@ -115,31 +119,31 @@ void MainWindow::on_spin_x_valueChanged(double arg1) {
 }
 
 void MainWindow::on_spin_y_valueChanged(double arg1) {
-    y_shift = arg1;
-    send_params();
-    view->update();
+  y_shift = arg1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_spin_z_valueChanged(double arg1) {
-    z_shift = arg1;
-    send_params();
-    view->update();
+  z_shift = arg1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_slider_ox_sliderMoved(int position) {
-  ox_rotate = position/6.283;
+  ox_rotate = position / 6.283;
   send_params();
   view->update();
 }
 
 void MainWindow::on_slider_oy_sliderMoved(int position) {
-  oz_rotate = position/6.283;
+  oz_rotate = position / 6.283;
   send_params();
   view->update();
 }
 
 void MainWindow::on_slider_oz_sliderMoved(int position) {
-  oy_rotate = position/6.283; //tut kostil
+  oy_rotate = position / 6.283;  // tut kostil
   send_params();
   view->update();
 }
@@ -153,7 +157,7 @@ void MainWindow::on_scale_slider_sliderMoved(int position) {
 void MainWindow::on_Color_button_clicked() {
   back_color = QColorDialog::getColor();
   view->backColor = back_color;
-//  view->afterOpenObj();
+  //  view->afterOpenObj();
   view->update();
 }
 
@@ -237,10 +241,10 @@ void MainWindow::load_settings() {
   ui->line_width_spinbox->setValue(line_width);
   ui->points_size_spinbox->setValue(points_size);
 
-//  ui->label->setText("filename = " +
-//                     fullname.mid(fullname.lastIndexOf('/') + 1));
-//  file_opened = 1;
-//  view->fileFullName = fullname;
+  //  ui->label->setText("filename = " +
+  //                     fullname.mid(fullname.lastIndexOf('/') + 1));
+  //  file_opened = 1;
+  //  view->fileFullName = fullname;
   num_of_vertexes = view->data.vertex_count;
   num_of_edges = view->data.vertex_indices_count;
   ui->polygons_label->setText(QString::number(num_of_edges));
@@ -302,21 +306,21 @@ void MainWindow::on_points_size_spinbox_valueChanged(int arg1) {
 }
 
 void MainWindow::on_absent_point_rb_clicked() {
-    points_type = 0;
-    send_params();
-    view->update();
+  points_type = 0;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_sphere_point_rb_clicked() {
-    points_type = 2;
-    send_params();
-    view->update();
+  points_type = 2;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_box_point_rb_clicked() {
-    points_type = 1;
-    send_params();
-    view->update();
+  points_type = 1;
+  send_params();
+  view->update();
 }
 
 void MainWindow::on_line_width_spinbox_valueChanged(int arg1) {
@@ -354,42 +358,40 @@ void MainWindow::on_but_reset_clicked() {
   points_size = 1;
   send_params();
   view->update();
-
 }
 
 void MainWindow::on_pushButton_clicked() {
-    QString filename = QFileDialog::getSaveFileName(this, "Save File", getenv("HOME"), "Image (*.jpg *.jpeg *.bmp)");
-    if(!filename.endsWith(".jpg") && !filename.endsWith(".jpeg") && !filename.endsWith(".bmp"))
-    {
-      filename.append(".jpg");
-    }
-    QImage image = view->grabFramebuffer();
-    if(!image.save(filename, "JPG"))
-    {
-      QMessageBox::warning(this, "Save Image", "Error saving image.");
-    }
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Save File", getenv("HOME"), "Image (*.jpg *.jpeg *.bmp)");
+  if (!filename.endsWith(".jpg") && !filename.endsWith(".jpeg") &&
+      !filename.endsWith(".bmp")) {
+    filename.append(".jpg");
+  }
+  QImage image = view->grabFramebuffer();
+  if (!image.save(filename, "JPG")) {
+    QMessageBox::warning(this, "Save Image", "Error saving image.");
+  }
 }
 
 void MainWindow::create_gif_animation() {
-    QImage image = view->grabFramebuffer();
-    QSize gif_size(640, 480);
-    QImage new_image = image.scaled(gif_size);
-    frame->addFrame(new_image);
+  QImage image = view->grabFramebuffer();
+  QSize gif_size(640, 480);
+  QImage new_image = image.scaled(gif_size);
+  frame->addFrame(new_image);
 
-    if (counter == 50) { // если последний вызов
-        frame->save(gifname);
-        gif_timer->stop();
-        counter = 0;
-        frame = NULL;
-    }
-    counter++;
+  if (counter == 50) {  // если последний вызов
+    frame->save(gifname);
+    gif_timer->stop();
+    counter = 0;
+    frame = NULL;
+  }
+  counter++;
 }
 
-void MainWindow::on_pushButton_2_clicked()
-{
-  gifname = QFileDialog::getSaveFileName(this, "Save File", getenv("HOME"), "Image (*.gif)");
-  if(!gifname.endsWith(".gif"))
-  {
+void MainWindow::on_pushButton_2_clicked() {
+  gifname = QFileDialog::getSaveFileName(this, "Save File", getenv("HOME"),
+                                         "Image (*.gif)");
+  if (!gifname.endsWith(".gif")) {
     gifname.append(".gif");
   }
   frame = new QGifImage();

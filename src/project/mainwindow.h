@@ -9,10 +9,10 @@
 #include <QRadioButton>
 #include <QSettings>
 #include <QWheelEvent>
-#include <QtPlugin>
 #include <QtGui>
-#include "QtGifImage-master/src/gifimage/qgifimage.h"
+#include <QtPlugin>
 
+#include "QtGifImage-master/src/gifimage/qgifimage.h"
 #include "myglwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow {
   /// \brief sending params from ui to myglwidget
   ///
   void send_params();
-//  void send_changes();
+  //  void send_changes();
 
   //    void wheelEvent(QWheelEvent * event);
   //    void mousePressEvent (QMouseEvent * event);
@@ -73,8 +73,8 @@ class MainWindow : public QMainWindow {
   int line_width;
   int points_size;
 
-  QGifImage *frame; // без инициализации, он есть, но ничего не содержит
-  QTimer *gif_timer;
+  QGifImage* frame;  // без инициализации, он есть, но ничего не содержит
+  QTimer* gif_timer;
   QString gifname;
   int counter = 0;
 

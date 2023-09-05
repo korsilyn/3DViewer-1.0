@@ -4,9 +4,9 @@ CC = gcc
 GFLAGS = --coverage
 TFLAGS = -lcheck
 OBJECTS = *.o
-SOURCES := helpers/s21_*
+SOURCES := helpers/*.c
 
-SOURCES_TEST := 
+SOURCES_TEST := tests/s21_test.c 
 
 all: clean test
 
@@ -15,24 +15,24 @@ all: clean test
 	@ar rcs 3dViewer_1.a $(OBJECTS)
 	@rm *.o
 
-test:
-	echo "not done yet"
+test: 3dViewer_1.a $(SOURCES_TEST)
+	$(CC) $(CPPFLAGS) $(SOURCES_TEST) 3dViewer_1.a -o test.out -lcheck -lm
+	@./test.out
 
 check:
-	clang-format -n -style=Google $(SOURCES) $(SOURCES_TEST) helpers/s21_* project/*.c project/*.cpp project/*.h 
+	clang-format -n -style=Google $(SOURCES) $(SOURCES_TEST) helpers/*.c project/*.cpp project/*.h tests/s21_*
+	clang-format -i -style=Google $(SOURCES) $(SOURCES_TEST) helpers/*.c project/*.cpp project/*.h tests/s21_*
 
 leaks:
 	CK_FORK=no leaks --atExit -- ./test
 
 gcov_report:
-	@$(CC) $(CPPFLAGS) $(SOURCES) $(GFLAGS) $(ASAN) -c
-	@ar rcs 3dViewer_1.a $(OBJECTS)
-	@rm *.o
-	@$(CC) $(CPPFLAGS) $(ASAN) $(GFLAGS) 3dViewer_1.a $(SOURCES_TEST) $(TFLAGS) $(VAR) -o test
-	@./test
-	lcov -t "test" -o test.info -c -d .
+	gcc -o test $(SOURCES_TEST) --coverage $(SOURCES) -lcheck -lm
+	./test
+	lcov -t "a.out" -o test.info -c -d .
 	genhtml -o report test.info
-	open report/index.html
+	open ./report/index.html
+	rm -rf test *.o *.a *gcda *gcno *info
 
 install:
 	mkdir build

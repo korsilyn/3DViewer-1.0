@@ -2,6 +2,7 @@
 #define C8_3DVIEWER_S21_TRANSFORM_H
 
 #include "s21_3dviewer.h"
+#include "s21_parse.h"
 
 void move_x(obj_data *data, double distance);
 void move_y(obj_data *data, double distance);

@@ -4,15 +4,15 @@
 //#include <gl.h>
 //#include <glu.h>
 
+#include <QMatrix4x4>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <QWheelEvent>
 #include <QWidget>
 #include <QtOpenGL>
 #include <QtOpenGLWidgets>
-#include <QMatrix4x4>
-#include <QWheelEvent>
 // #include <glew.h>
 #include <iostream>
 
@@ -47,14 +47,13 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   double oy_rotate = 0;
   double ox_rotate = 0;
 
-
   unsigned int num_of_vertexes = 0;
   unsigned int num_of_edges = 0;
 
   QString fileFullName;
   std::string filePath;
 
-//  void afterOpenObj();
+  //  void afterOpenObj();
 
   void initializeGL() override;
 
@@ -73,7 +72,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   QPoint new_pos;
   //
 
-  protected:
+ protected:
   int succsess_reading = 0;
   void resizeGL(int w, int h) override;
   void paintGL() override;
@@ -88,28 +87,30 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
   GLuint VAO, VBO, EBO;
   QOpenGLShaderProgram shaderProgram;
 
-  const char *vertexSourceCode = "#version 330 core\n"
-    "layout(location = 0) in vec4 position;\n"
-    "uniform mat4 MVPMatrix;\n"
-    "void main() {\n"
-    "  gl_Position = MVPMatrix * position;\n"
-    "}\n";
+  const char *vertexSourceCode =
+      "#version 330 core\n"
+      "layout(location = 0) in vec4 position;\n"
+      "uniform mat4 MVPMatrix;\n"
+      "void main() {\n"
+      "  gl_Position = MVPMatrix * position;\n"
+      "}\n";
 
-  const char *fragmentSourceCode = "#version 330 core\n"
-    "uniform vec4 color;\n"
-    "uniform int dashed;\n"
-    "out vec4 FragColor;\n"
-    "void main() {\n"
-    "  if (dashed == 1) {\n"
-    "    float dashSize = 0.3;\n"
-    "    float gapSize = 0.3;\n"
-    "    float t = mod(gl_FragCoord.x, (dashSize + gapSize)) / (dashSize "
-    "+ gapSize);\n"
-    "    if (t > 0.5) FragColor = color;\n"
-    "    else discard;\n"
-    "  }\n"
-    "  else FragColor = color;\n"
-    "}\n";
+  const char *fragmentSourceCode =
+      "#version 330 core\n"
+      "uniform vec4 color;\n"
+      "uniform int dashed;\n"
+      "out vec4 FragColor;\n"
+      "void main() {\n"
+      "  if (dashed == 1) {\n"
+      "    float dashSize = 0.3;\n"
+      "    float gapSize = 0.3;\n"
+      "    float t = mod(gl_FragCoord.x, (dashSize + gapSize)) / (dashSize "
+      "+ gapSize);\n"
+      "    if (t > 0.5) FragColor = color;\n"
+      "    else discard;\n"
+      "  }\n"
+      "  else FragColor = color;\n"
+      "}\n";
 };
 
 #endif  // MYGLWIDGET_H
