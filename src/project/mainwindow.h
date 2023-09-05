@@ -9,6 +9,9 @@
 #include <QRadioButton>
 #include <QSettings>
 #include <QWheelEvent>
+#include <QtPlugin>
+#include <QtGui>
+#include "QtGifImage-master/src/gifimage/qgifimage.h"
 
 #include "myglwidget.h"
 
@@ -70,6 +73,11 @@ class MainWindow : public QMainWindow {
   int line_width;
   int points_size;
 
+  QGifImage *frame; // без инициализации, он есть, но ничего не содержит
+  QTimer *gif_timer;
+  QString gifname;
+  int counter = 0;
+
  private slots:
 
   void on_spin_x_valueChanged(double arg1);
@@ -115,6 +123,12 @@ class MainWindow : public QMainWindow {
   void on_but_reset_clicked();
 
   void on_Color_button_3_clicked();
+
+  void on_pushButton_clicked();
+
+  void on_pushButton_2_clicked();
+
+  void create_gif_animation();
 
  private:
   Ui::MainWindow* ui;
