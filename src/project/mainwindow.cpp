@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
   a = a.mid(0, a.lastIndexOf('/'));
   a = a+"/objects/cat.obj";
   view->fileFullName = a;
+
+  gif_timer = new QTimer(this);
+  connect(gif_timer, SIGNAL(timeout()), this, SLOT(create_gif_animation()));
 }
 
 MainWindow::~MainWindow() {
@@ -354,7 +357,43 @@ void MainWindow::on_but_reset_clicked() {
 
 }
 
-// void MainWindow::wheelEvent(QWheelEvent * event)
-//{
-////    qDebug() << 123;
-//}
+void MainWindow::on_pushButton_clicked() {
+    QString filename = QFileDialog::getSaveFileName(this, "Save File", getenv("HOME"), "Image (*.jpg *.jpeg *.bmp)");
+    if(!filename.endsWith(".jpg") && !filename.endsWith(".jpeg") && !filename.endsWith(".bmp"))
+    {
+      filename.append(".jpg");
+    }
+    QImage image = view->grabFramebuffer();
+    if(!image.save(filename, "JPG"))
+    {
+      QMessageBox::warning(this, "Save Image", "Error saving image.");
+    }
+}
+
+void MainWindow::create_gif_animation() {
+    QImage image = view->grabFramebuffer();
+    QSize gif_size(640, 480);
+    QImage new_image = image.scaled(gif_size);
+    frame->addFrame(new_image);
+
+    if (counter == 50) { // если последний вызов
+        frame->save(gifname);
+        gif_timer->stop();
+        counter = 0;
+        frame = NULL;
+    }
+    counter++;
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+  gifname = QFileDialog::getSaveFileName(this, "Save File", getenv("HOME"), "Image (*.gif)");
+  if(!gifname.endsWith(".gif"))
+  {
+    gifname.append(".gif");
+  }
+  frame = new QGifImage();
+
+  gif_timer->setInterval(100);
+  gif_timer->start();
+}
