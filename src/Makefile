@@ -67,3 +67,9 @@ clean:
 
 dist:
 	cd .. && tar -czf SRC_C8_3dViewer_1.0-0.tgz src
+
+download_models: 
+	curl -L -o cow.obj 'https://docs.google.com/uc?export=download&id='1jlbWBA8PazRW_rkYjeORLePHmA2foAEI 
+	curl -L -o Among%20US.obj 'https://docs.google.com/uc?export=download&id='1gN_mGEwYwlyiT0ggFFqxsrfAouFzK5FB
+	curl -L -o cube_first.obj 'https://docs.google.com/uc?export=download&id='1HnXI9gkkPufPZlr1RFeWu_GQQir_CT29
+	curl -L -o shuttle.obj 'https://docs.google.com/uc?export=download&id='1xKT6ep0xwtILr8LqNuvat8l1tVvSiNYp

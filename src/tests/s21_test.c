@@ -2,7 +2,7 @@
 
 START_TEST(test_parser_1) {
   obj_data data = {0, NULL, 0, NULL};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   ck_assert_int_eq(status, 1);
   int expectedVertices = 8;
   int expectedIndices = 36;
@@ -45,7 +45,7 @@ END_TEST
 
 START_TEST(test_parser_4) {
   obj_data model = {0};
-  int status = s21_read_obj_file(&model, "tests/obj_files/shuttle.obj");
+  int status = s21_read_obj_file(&model, "shuttle.obj");
   ck_assert_int_eq(status, 1);
   const long double resultVertexes[] = {
       3.070224,  -0.119728, 0.996443,  5.942016,  -0.012019, 4.157199,
@@ -215,6 +215,8 @@ END_TEST
 
 START_TEST(test_move_x) {
   obj_data data = {0};
+  int status = s21_read_obj_file(&data, "cube_first.obj");
+  ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       4.000000,  1.000000,  -1.000000, 1.000000,  4.000000,  -1.000000,
       -1.000000, 1.000000,  4.000000,  1.000000,  1.000000,  1.000000,
@@ -231,6 +233,8 @@ END_TEST
 
 START_TEST(test_move_y) {
   obj_data data = {0};
+  int status = s21_read_obj_file(&data, "cube_first.obj");
+  ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       1.000000,  4.000000, -1.000000, 1.000000, 1.000000,  2.000000,
       -1.000000, 1.000000, 1.000000,  4.000000, 1.000000,  1.000000,
@@ -247,7 +251,7 @@ END_TEST
 
 START_TEST(test_move_z) {
   obj_data data = {0};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       1.000000,  1.000000,  2.000000,  1.000000,  1.000000,  -1.000000,
@@ -265,7 +269,7 @@ END_TEST
 
 START_TEST(test_rotate_x) {
   obj_data data = {0};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       1.000000,  0.992994,  -1.006957, 1.000000,  1.000000,  -1.006957,
@@ -284,8 +288,8 @@ END_TEST
 START_TEST(test_rotate_y) {
   obj_data data = {0};
   int status = s21_read_obj_file(
-      &data, "tests/obj_files/cube_first.obj");  // считываем в дату тот массив
-                                                 // который лежит в объекте
+      &data, "cube_first.obj");  // считываем в дату тот массив
+                                 // который лежит в объекте
   ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       0.992994,  1.000000,  -1.006957, 1.000000,  0.992994,  -1.000000,
@@ -308,7 +312,7 @@ END_TEST
 
 START_TEST(test_rotate_z) {
   obj_data data = {0};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   ck_assert_int_eq(status, 1);
   const long double vertex_array[] = {
       1.006957,  0.992994,  -1.000000, 1.000000,  0.992994,  -1.006957,
@@ -326,7 +330,7 @@ END_TEST
 
 START_TEST(test_scale_max) {
   obj_data data = {0};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   const long double vertex_array[] = {
       2.2000000,  2.2000000, -2.2000000, 2.2000000, 2.2000000,  2.2000000,
       -2.2000000, 2.2000000, 2.2000000,  2.2000000, 2.2000000,  2.2000000,
@@ -344,7 +348,7 @@ END_TEST
 
 START_TEST(test_scale_min) {
   obj_data data = {0};
-  int status = s21_read_obj_file(&data, "tests/obj_files/cube_first.obj");
+  int status = s21_read_obj_file(&data, "cube_first.obj");
   const long double vertex_array[] = {
       -2.2000000, -2.2000000, 2.2000000,  -2.2000000, -2.2000000, -2.2000000,
       2.2000000,  -2.2000000, -2.2000000, -2.2000000, -2.2000000, -2.2000000,
